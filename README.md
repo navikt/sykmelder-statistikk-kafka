@@ -1,5 +1,5 @@
 # sykmelder-statistikk-kafka 
-
+Verktøy for sykmeldere å sammenligne sin sykmeldingspraksis med andres
 
 ## Technologies used
 * Kotlin
@@ -7,13 +7,23 @@
 * Gradle
 * Junit
 * Docker
+* JDK
 
-#### Requirements
+### Prerequisites
+Make sure you have JDK installed using this command:
+#### JDK 17
+```bash script
+java --version
+```
 
-* JDK 17
-
+#### Docker
+Make sure you have docker installed using this command:
+```bash script
+docker --version
+```
 
 ## Getting started
+
 ### Building the application
 #### Compile and package application
 To build locally and run the integration tests you can simply run
@@ -25,15 +35,30 @@ or on windows
 gradlew.bat shadowJar
 ```
 
+### Run application from gradle
+``` shell
+./gradlew run
+```
+
+### Run application from docker
+#### Creating a docker image
+Creating a docker image should be as simple as
+``` shell 
+docker build -t sykmelder-statistikk-kafka .
+```
+#### Running docker image
+``` shell
+docker run --rm -it -p 8080:8080 sykmelder-statistikk-kafka
+```
+
 ### Upgrading the gradle wrapper
 Find the newest version of gradle here: https://gradle.org/releases/ Then run this command:
-
 ``` shell
 ./gradlew wrapper --gradle-version $gradleVersjon
 ```
 
-
 ### Swagger api doc
+The Swagger api doc is available here
 https://sykmelderstatistikkkafka.intern.dev.nav.no/swagger
 
 ### Contact
