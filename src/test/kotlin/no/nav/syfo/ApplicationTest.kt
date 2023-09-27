@@ -5,8 +5,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
-import no.nav.syfo.no.nav.syfo.plugins.nais.isalive.naisIsAliveRoute
-import no.nav.syfo.no.nav.syfo.plugins.nais.isready.naisIsReadyRoute
+import no.nav.syfo.plugins.nais.isalive.naisIsAliveRoute
+import no.nav.syfo.plugins.nais.isready.naisIsReadyRoute
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
