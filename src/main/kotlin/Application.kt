@@ -28,8 +28,9 @@ fun main() {
 }
 
 fun Application.module() {
+    val environmentVariables = EnvironmentVariables()
     val applicationState = ApplicationState()
-    configureRouting(applicationState)
+    configureRouting(applicationState, environmentVariables.naisClusterName)
 }
 
 data class ApplicationState(

@@ -32,6 +32,10 @@ Find the newest version of gradle here: https://gradle.org/releases/ Then run th
 ./gradlew wrapper --gradle-version $gradleVersjon
 ```
 
+
+### Swagger api doc
+https://sykmelderstatistikkkafka.intern.dev.nav.no/api/swagger
+
 ### Contact
 
 This project is maintained by [navikt/teamsykmelding](CODEOWNERS)

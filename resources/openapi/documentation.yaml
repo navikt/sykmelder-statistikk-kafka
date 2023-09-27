@@ -1,8 +1,0 @@
-openapi: "3.0.3"
-info:
-  title: "sykmelder_statistikk_kafka_ API"
-  description: "sykmelder_statistikk_kafka_ API"
-  version: "1.0.0"
-servers:
-- url: "https://sykmelder_statistikk_kafka_"
-paths: {}

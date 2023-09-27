@@ -1,14 +1,14 @@
 openapi: "3.0.3"
 info:
-  title: "Application API"
-  description: "Application API"
+  title: "sykmelder statistikk kafka API"
+  description: "sykmelder statistikk kafka API"
   version: "1.0.0"
 servers:
-  - url: "http://0.0.0.0:8080"
+- url: "https://sykmelderstatistikkkafka.intern.dev.nav.no"
 paths:
-  /:
+  /internal/is_alive:
     get:
-      description: "Hello World!"
+      description: ""
       responses:
         "200":
           description: "OK"
@@ -18,6 +18,35 @@ paths:
                 type: "string"
               examples:
                 Example#1:
-                  value: "Hello World!"
-components:
-  schemas:
+                  value: "I'm alive! :)"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "I'm dead x_x"
+  /internal/is_ready:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "I'm ready! :)"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Please wait! I'm not ready :("

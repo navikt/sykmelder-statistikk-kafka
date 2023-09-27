@@ -11,7 +11,7 @@ import no.nav.syfo.plugins.nais.isalive.naisIsAliveRoute
 import no.nav.syfo.plugins.nais.isready.naisIsReadyRoute
 
 
-fun Application.configureRouting(applicationState: ApplicationState) {
+fun Application.configureRouting(applicationState: ApplicationState, naisClusterName :String) {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
@@ -20,6 +20,8 @@ fun Application.configureRouting(applicationState: ApplicationState) {
     routing {
         naisIsAliveRoute(applicationState)
         naisIsReadyRoute(applicationState)
-        swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
+        if (naisClusterName == "dev-gcp" || naisClusterName == "localhost") {
+            swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
+        }
     }
 }
