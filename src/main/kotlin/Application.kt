@@ -8,7 +8,7 @@ import no.nav.syfo.plugins.configureRouting
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.sykmelder.statistikk-kafka")
+val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.sykmelder.statistikk.kafka")
 
 fun main() {
     val embeddedServer =
