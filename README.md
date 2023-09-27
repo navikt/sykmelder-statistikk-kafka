@@ -34,7 +34,7 @@ Find the newest version of gradle here: https://gradle.org/releases/ Then run th
 
 
 ### Swagger api doc
-https://sykmelderstatistikkkafka.intern.dev.nav.no/api/swagger
+https://sykmelderstatistikkkafka.intern.dev.nav.no/swagger
 
 ### Contact
 
