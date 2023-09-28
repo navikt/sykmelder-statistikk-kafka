@@ -1,10 +1,10 @@
 openapi: "3.0.3"
 info:
-  title: "sykmelder statistikk kafka API"
-  description: "sykmelder statistikk kafka API"
+  title: "sykmelder_statistikk_kafka API"
+  description: "sykmelder_statistikk_kafka API"
   version: "1.0.0"
 servers:
-- url: "https://sykmelderstatistikkkafka.intern.dev.nav.no"
+- url: "https://sykmelder_statistikk_kafka"
 paths:
   /internal/is_alive:
     get:

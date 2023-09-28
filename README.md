@@ -35,22 +35,6 @@ or on windows
 gradlew.bat shadowJar
 ```
 
-### Run application from gradle
-``` shell
-./gradlew run
-```
-
-### Run application from docker
-#### Creating a docker image
-Creating a docker image should be as simple as
-``` shell 
-docker build -t sykmelder-statistikk-kafka .
-```
-#### Running docker image
-``` shell
-docker run --rm -it -p 8080:8080 sykmelder-statistikk-kafka
-```
-
 ### Upgrading the gradle wrapper
 Find the newest version of gradle here: https://gradle.org/releases/ Then run this command:
 ``` shell

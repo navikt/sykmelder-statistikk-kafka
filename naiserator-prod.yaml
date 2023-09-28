@@ -29,3 +29,8 @@ spec:
     requests:
       cpu: 200m
       memory: 768Mi
+  kafka:
+    pool: nav-prod
+  env:
+    - name: TEST_TOPIC
+      value: nais-verification.kafka-canary-prod-gcp
