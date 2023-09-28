@@ -31,3 +31,8 @@ spec:
       memory: 512Mi
   ingresses:
     - "https://sykmelderstatistikkkafka.intern.dev.nav.no"
+  kafka:
+    pool: nav-dev
+  env:
+    - name: TEST_TOPIC
+      value: nais-verification.kafka-canary-dev-gcp

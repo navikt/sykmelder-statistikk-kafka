@@ -3,6 +3,8 @@ val junitJupiterVersion = "5.10.0"
 val ktfmtVersion = "0.44"
 val logstashEncoderVersion = "7.4"
 val ktorVersion = "2.3.4"
+val smCommonVersion = "2.0.2"
+val coroutinesVersion = "1.7.3"
 
 plugins {
     id("application")
@@ -23,9 +25,14 @@ application {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
+    }
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutinesVersion")
+
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
@@ -35,6 +42,13 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
+
+    implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
+    constraints {
+        implementation("org.xerial.snappy:snappy-java:1.1.10.4") {
+            because("override transient from org.apache.kafka:kafka_2.12")
+        }
+    }
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion") {
         exclude(group = "commons-codec")
