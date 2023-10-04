@@ -3,7 +3,7 @@ val junitJupiterVersion = "5.10.0"
 val ktfmtVersion = "0.44"
 val logstashEncoderVersion = "7.4"
 val ktorVersion = "2.3.4"
-val smCommonVersion = "2.0.2"
+val smCommonVersion = "2.0.3"
 val coroutinesVersion = "1.7.3"
 
 plugins {
