@@ -2,7 +2,7 @@ val logbackVersion = "1.4.11"
 val junitJupiterVersion = "5.10.0"
 val ktfmtVersion = "0.44"
 val logstashEncoderVersion = "7.4"
-val ktorVersion = "2.3.4"
+val ktorVersion = "2.3.5"
 val smCommonVersion = "2.0.3"
 val coroutinesVersion = "1.7.3"
 
