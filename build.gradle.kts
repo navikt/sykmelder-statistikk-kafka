@@ -2,15 +2,15 @@ val logbackVersion = "1.4.11"
 val junitJupiterVersion = "5.10.0"
 val ktfmtVersion = "0.44"
 val logstashEncoderVersion = "7.4"
-val ktorVersion = "2.3.4"
-val smCommonVersion = "2.0.2"
+val ktorVersion = "2.3.5"
+val smCommonVersion = "2.0.3"
 val coroutinesVersion = "1.7.3"
 
 plugins {
     id("application")
     kotlin("jvm") version "1.9.10"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("com.diffplug.spotless") version "6.21.0"
+    id("com.diffplug.spotless") version "6.22.0"
 }
 
 group = "no.nav.syfo"
@@ -45,7 +45,7 @@ dependencies {
 
     implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
     constraints {
-        implementation("org.xerial.snappy:snappy-java:1.1.10.4") {
+        implementation("org.xerial.snappy:snappy-java:1.1.10.5") {
             because("override transient from org.apache.kafka:kafka_2.12")
         }
     }
