@@ -58,7 +58,7 @@ fun Application.module() {
 
     val kafkaConsumer =
         KafkaConsumer<String, String>(
-            KafkaUtils.getAivenKafkaConfig("kafka-canary-consumer")
+            KafkaUtils.getAivenKafkaConfig("dvh-consumer")
                 .toConsumerConfig(
                     "${EnvironmentVariables().applicationName}-consumer",
                     valueDeserializer = StringDeserializer::class
