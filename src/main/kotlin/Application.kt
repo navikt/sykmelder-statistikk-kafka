@@ -98,9 +98,8 @@ private fun start(
 ) {
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
-            logger.info("message from kafka: ${consumerRecord.value()}")
-        //val dataTest: DataTest = objectMapper.readValue(consumerRecord.value())
-            //handleMessage(dataTest)
+            val dataTest: DataTest = objectMapper.readValue(consumerRecord.value())
+            handleMessage(dataTest)
         }
     }
 }
@@ -112,23 +111,23 @@ fun handleMessage(
 }
 
 data class DataTest(
-    var pk : Int,
-    var aarmnd : String,
-    var sykm_houvedgruppe_kode : String,
-    var sykm_undergruppe_kode : String,
-    var sykmelder_sammenl_type_kode : String,
-    var kjonn_kode : String,
-    var alder : Int,
-    var alder_gruppe5_besk : String,
-    var bydel_nr : String,
-    var kommune_nr : String,
-    var fylke_nr : String,
-    var alder_yrkesaktiv_flagg : Int,
-    var naering_inntekt_kategori : String,
-    var ikke_artbeidstaker_flagg : Int,
-    var rangering : Int,
-    var pasient_antall : Int,
-    var arbeid_antall : Int,
+    var PK : Int,
+    var AARMND : String,
+    var SYKM_HOVEDGRUPPE_KODE : String,
+    var SYKM_UNDERGRUPPE_KODE : String,
+    var SYKMELDER_SAMMENL_TYPE_KODE : String,
+    var KJONN_KODE : String,
+    var ALDER : Int,
+    var ALDER_GRUPPE5_BESK : String,
+    var BYDEL_NR : String,
+    var KOMMUNE_NR : String,
+    var FYLKE_NR : String,
+    var ALDER_YRKESAKTIV_FLAGG : Int,
+    var NAERING_INNTEKT_KATEGORI : String,
+    var IKKE_ARBEIDSTAKER_FLAGG : Int,
+    var RANGERING : Int,
+    var PASIENT_ANTALL : Int,
+    var ARBEID_ANTALL : Int,
 )
 
 data class ApplicationState(
