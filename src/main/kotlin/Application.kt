@@ -98,16 +98,19 @@ private fun start(
 ) {
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
-            val dataTest: DataTest = objectMapper.readValue(consumerRecord.value())
+            val dataTest: List<DataTest> = objectMapper.readValue(consumerRecord.value())
             handleMessage(dataTest)
         }
     }
 }
 
 fun handleMessage(
-    dataTest : DataTest
+    dataTest : List<DataTest>
 ) {
-    logger.info("message from kafka: $dataTest")
+    dataTest.forEach { data ->
+        logger.info("message from kafka: $data")
+    }
+
 }
 
 data class DataTest(
