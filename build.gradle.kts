@@ -5,6 +5,7 @@ val logstashEncoderVersion = "7.4"
 val ktorVersion = "2.3.5"
 val smCommonVersion = "2.0.3"
 val coroutinesVersion = "1.7.3"
+val jacksonVersion = "2.15.2"
 
 plugins {
     id("application")
@@ -39,6 +40,8 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")

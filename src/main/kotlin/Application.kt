@@ -1,5 +1,11 @@
 package no.nav.syfo
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -20,6 +26,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.sykmelder.statistikk.kafka")
+val objectMapper: ObjectMapper =
+    ObjectMapper()
+        .registerModule(JavaTimeModule())
+        .registerKotlinModule()
+        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
 fun main() {
     val embeddedServer =
@@ -85,10 +97,38 @@ private fun start(
     kafkaConsumer: KafkaConsumer<String, String>
 ) {
     while (applicationState.ready) {
-        val records = kafkaConsumer.poll(Duration.ofSeconds(10))
-        records.forEach { logger.info("message from kafka: ${it.value()}") }
+        kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
+            val dataTest: DataTest = objectMapper.readValue(consumerRecord.value())
+            handleMessage(dataTest)
+        }
     }
 }
+
+fun handleMessage(
+    dataTest : DataTest
+) {
+    logger.info("message from kafka: $dataTest")
+}
+
+data class DataTest(
+    var pk : Int,
+    var aarmnd : String,
+    var sykm_houvedgruppe_kode : String,
+    var sykm_undergruppe_kode : String,
+    var sykmelder_sammenl_type_kode : String,
+    var kjonn_kode : String,
+    var alder : Int,
+    var alder_gruppe5_besk : String,
+    var bydel_nr : String,
+    var kommune_nr : String,
+    var fylke_nr : String,
+    var alder_yrkesaktiv_flagg : Int,
+    var naering_inntekt_kategori : String,
+    var ikke_artbeidstaker_flagg : Int,
+    var rangering : Int,
+    var pasient_antall : Int,
+    var arbeid_antall : Int,
+)
 
 data class ApplicationState(
     var alive: Boolean = true,

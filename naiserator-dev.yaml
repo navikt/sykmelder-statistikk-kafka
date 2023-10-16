@@ -35,4 +35,4 @@ spec:
     pool: nav-dev
   env:
     - name: TEST_TOPIC
-      value: nais-verification.kafka-canary-dev-gcp
+      value: disykefravar.sfs-data
