@@ -98,17 +98,31 @@ private fun start(
 ) {
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
-            val dataTest: DataTest = objectMapper.readValue(consumerRecord.value())
-            handleMessage(dataTest)
+            val kafakMessage: KafakMessage = objectMapper.readValue(consumerRecord.value())
+            handleMessage(kafakMessage)
         }
     }
 }
 
 fun handleMessage(
-    dataTest : DataTest
+    kafakMessage : KafakMessage
 ) {
-    logger.info("message from kafka: $dataTest")
+    logger.info("message from kafka is: $kafakMessage")
+    if (kafakMessage.metadata.type == "diagnose"){
+        val diagnoseData = objectMapper.readValue<DataTest>(kafakMessage.data)
+        logger.info("diagnoseData from kafka is: $diagnoseData")
+    }
+    logger.info("message from kafka is: $kafakMessage")
 }
+
+data class KafakMessage(
+    val data: String,
+    val metadata: Metadata
+)
+
+data class Metadata(
+    val type: String
+)
 
 data class DataTest(
     var PK : Int,
