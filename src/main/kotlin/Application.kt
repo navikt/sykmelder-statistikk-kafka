@@ -18,10 +18,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
-import no.nav.syfo.no.nav.syfo.models.application.ApplicationState
-import no.nav.syfo.no.nav.syfo.models.application.EnvironmentVariables
-import no.nav.syfo.no.nav.syfo.models.kafka.DataTest
-import no.nav.syfo.no.nav.syfo.models.kafka.KafakMessage
+import no.nav.syfo.models.application.ApplicationState
+import no.nav.syfo.models.application.EnvironmentVariables
+import no.nav.syfo.models.kafka.DataTest
+import no.nav.syfo.models.kafka.KafakMessage
 import no.nav.syfo.plugins.configureRouting
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -108,15 +108,11 @@ private fun start(
     }
 }
 
-fun handleMessage(
-    kafakMessage : KafakMessage
-) {
+fun handleMessage(kafakMessage: KafakMessage) {
     logger.info("message from kafka is: $kafakMessage")
-    if (kafakMessage.metadata.type == "diagnose"){
+    if (kafakMessage.metadata.type == "diagnose") {
         val diagnoseData = objectMapper.readValue<DataTest>(kafakMessage.data)
         logger.info("diagnoseData from kafka is: $diagnoseData")
     }
     logger.info("message from kafka is: $kafakMessage")
 }
-
-

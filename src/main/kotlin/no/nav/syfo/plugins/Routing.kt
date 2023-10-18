@@ -6,7 +6,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.syfo.ApplicationState
+import no.nav.syfo.models.application.ApplicationState
 import no.nav.syfo.plugins.nais.isalive.naisIsAliveRoute
 import no.nav.syfo.plugins.nais.isready.naisIsReadyRoute
 
