@@ -1,18 +1,15 @@
-package no.nav.syfo
+package no.nav.syfo.plugins
 
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.routing.routing
-import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.handleRequest
+import io.ktor.http.*
+import io.ktor.server.routing.*
+import io.ktor.server.testing.*
 import no.nav.syfo.models.application.ApplicationState
 import no.nav.syfo.plugins.nais.isalive.naisIsAliveRoute
 import no.nav.syfo.plugins.nais.isready.naisIsReadyRoute
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-internal class ApplicationTest {
-
+internal class RoutingTest {
     @Test
     internal fun `Returns ok on is_alive`() {
         with(TestApplicationEngine()) {
@@ -23,8 +20,8 @@ internal class ApplicationTest {
             application.routing { naisIsAliveRoute(applicationState) }
 
             with(handleRequest(HttpMethod.Get, "/internal/is_alive")) {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("I'm alive! :)", response.content)
+                Assertions.assertEquals(HttpStatusCode.OK, response.status())
+                Assertions.assertEquals("I'm alive! :)", response.content)
             }
         }
     }
@@ -39,8 +36,8 @@ internal class ApplicationTest {
             application.routing { naisIsReadyRoute(applicationState) }
 
             with(handleRequest(HttpMethod.Get, "/internal/is_ready")) {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("I'm ready! :)", response.content)
+                Assertions.assertEquals(HttpStatusCode.OK, response.status())
+                Assertions.assertEquals("I'm ready! :)", response.content)
             }
         }
     }
@@ -52,14 +49,11 @@ internal class ApplicationTest {
             val applicationState = ApplicationState()
             applicationState.ready = false
             applicationState.alive = false
-            application.routing {
-                naisIsReadyRoute(applicationState)
-                naisIsAliveRoute(applicationState)
-            }
+            application.routing { naisIsAliveRoute(applicationState) }
 
             with(handleRequest(HttpMethod.Get, "/internal/is_alive")) {
-                assertEquals(HttpStatusCode.InternalServerError, response.status())
-                assertEquals("I'm dead x_x", response.content)
+                Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status())
+                Assertions.assertEquals("I'm dead x_x", response.content)
             }
         }
     }
@@ -72,9 +66,10 @@ internal class ApplicationTest {
             applicationState.ready = false
             applicationState.alive = false
             application.routing { naisIsReadyRoute(applicationState) }
+
             with(handleRequest(HttpMethod.Get, "/internal/is_ready")) {
-                assertEquals(HttpStatusCode.InternalServerError, response.status())
-                assertEquals("Please wait! I'm not ready :(", response.content)
+                Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status())
+                Assertions.assertEquals("Please wait! I'm not ready :(", response.content)
             }
         }
     }
