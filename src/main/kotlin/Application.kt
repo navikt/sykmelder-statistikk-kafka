@@ -18,6 +18,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
+import no.nav.syfo.no.nav.syfo.models.application.ApplicationState
+import no.nav.syfo.no.nav.syfo.models.application.EnvironmentVariables
+import no.nav.syfo.no.nav.syfo.models.kafka.DataTest
+import no.nav.syfo.no.nav.syfo.models.kafka.KafakMessage
 import no.nav.syfo.plugins.configureRouting
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -115,36 +119,4 @@ fun handleMessage(
     logger.info("message from kafka is: $kafakMessage")
 }
 
-data class KafakMessage(
-    val data: String,
-    val metadata: Metadata
-)
 
-data class Metadata(
-    val type: String
-)
-
-data class DataTest(
-    var PK : Int,
-    var AARMND : String,
-    var SYKM_HOVEDGRUPPE_KODE : String,
-    var SYKM_UNDERGRUPPE_KODE : String,
-    var SYKMELDER_SAMMENL_TYPE_KODE : String,
-    var KJONN_KODE : String,
-    var ALDER : Int,
-    var ALDER_GRUPPE5_BESK : String,
-    var BYDEL_NR : String,
-    var KOMMUNE_NR : String,
-    var FYLKE_NR : String,
-    var ALDER_YRKESAKTIV_FLAGG : Int,
-    var NAERING_INNTEKT_KATEGORI : String,
-    var IKKE_ARBEIDSTAKER_FLAGG : Int,
-    var RANGERING : Int,
-    var PASIENT_ANTALL : Int,
-    var ARBEID_ANTALL : Int,
-)
-
-data class ApplicationState(
-    var alive: Boolean = true,
-    var ready: Boolean = true,
-)
