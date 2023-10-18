@@ -67,7 +67,7 @@ fun Application.module() {
                     "${EnvironmentVariables().applicationName}-consumer",
                     valueDeserializer = StringDeserializer::class
                 )
-                .also { it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest" },
+                .also { it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "none" },
         )
 
     startConsumer(applicationState, kafkaConsumer)
@@ -82,7 +82,7 @@ fun startConsumer(
         while (applicationState.ready) {
             try {
                 logger.info("Starting consuming topic")
-                kafkaConsumer.subscribe(listOf(EnvironmentVariables().testTopic))
+                kafkaConsumer.subscribe(listOf(EnvironmentVariables().sfsDataTopic))
                 start(applicationState, kafkaConsumer)
             } catch (ex: Exception) {
                 logger.error(

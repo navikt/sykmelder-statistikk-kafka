@@ -34,5 +34,5 @@ spec:
   kafka:
     pool: nav-dev
   env:
-    - name: TEST_TOPIC
+    - name: SFS_DATA
       value: disykefravar.sfs-data
