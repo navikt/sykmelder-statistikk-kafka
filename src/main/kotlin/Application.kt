@@ -67,7 +67,7 @@ fun Application.module() {
                     "${EnvironmentVariables().applicationName}-consumer",
                     valueDeserializer = StringDeserializer::class
                 )
-                .also { it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "none" },
+                .also { it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "latest" },
         )
 
     startConsumer(applicationState, kafkaConsumer)
