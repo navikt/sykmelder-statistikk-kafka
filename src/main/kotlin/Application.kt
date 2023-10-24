@@ -110,8 +110,8 @@ private fun start(
 
 fun handleMessage(kafakMessage: KafakMessage) {
     logger.info("message from kafka is: $kafakMessage")
-    if (kafakMessage.metadata.type == "diagnose") {
-        val diagnoseData = objectMapper.readValue<DataTest>(kafakMessage.data)
+    if (kafakMessage.metadata.type == "sfs_data_test") {
+        val diagnoseData: DataTest = objectMapper.readValue(kafakMessage.data)
         logger.info("diagnoseData from kafka is: $diagnoseData")
     }
     logger.info("message from kafka is: $kafakMessage")
