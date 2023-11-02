@@ -6,13 +6,15 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.syfo.ApplicationState
+import no.nav.syfo.models.application.ApplicationState
 import no.nav.syfo.plugins.nais.isalive.naisIsAliveRoute
 import no.nav.syfo.plugins.nais.isready.naisIsReadyRoute
 
 fun Application.configureRouting(applicationState: ApplicationState, naisClusterName: String) {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
+            applicationState.alive = false
+            applicationState.ready = false
             call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
         }
     }

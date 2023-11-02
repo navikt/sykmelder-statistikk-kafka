@@ -1,5 +1,5 @@
 # sykmelder-statistikk-kafka 
-Verktøy for sykmeldere å sammenligne sin sykmeldingspraksis med andres
+Tool for sykmelder to compare their sick leave practice with that of others sykmeldere
 
 ## Technologies used
 * Kotlin

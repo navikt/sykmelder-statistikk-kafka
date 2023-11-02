@@ -1,5 +1,11 @@
 package no.nav.syfo
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -12,6 +18,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
+import no.nav.syfo.models.application.ApplicationState
+import no.nav.syfo.models.application.EnvironmentVariables
+import no.nav.syfo.models.kafka.DataTest
+import no.nav.syfo.models.kafka.KafakMessageDataTest
+import no.nav.syfo.models.kafka.KafakMessageMetadata
 import no.nav.syfo.plugins.configureRouting
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -20,6 +31,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.sykmelder.statistikk.kafka")
+val objectMapper: ObjectMapper =
+    ObjectMapper()
+        .registerModule(JavaTimeModule())
+        .registerKotlinModule()
+        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
 fun main() {
     val embeddedServer =
@@ -46,7 +63,7 @@ fun Application.module() {
 
     val kafkaConsumer =
         KafkaConsumer<String, String>(
-            KafkaUtils.getAivenKafkaConfig("kafka-canary-consumer")
+            KafkaUtils.getAivenKafkaConfig("dvh-consumer")
                 .toConsumerConfig(
                     "${EnvironmentVariables().applicationName}-consumer",
                     valueDeserializer = StringDeserializer::class
@@ -66,7 +83,7 @@ fun startConsumer(
         while (applicationState.ready) {
             try {
                 logger.info("Starting consuming topic")
-                kafkaConsumer.subscribe(listOf(EnvironmentVariables().testTopic))
+                kafkaConsumer.subscribe(listOf(EnvironmentVariables().sfsDataTopic))
                 start(applicationState, kafkaConsumer)
             } catch (ex: Exception) {
                 logger.error(
@@ -85,12 +102,23 @@ private fun start(
     kafkaConsumer: KafkaConsumer<String, String>
 ) {
     while (applicationState.ready) {
-        val records = kafkaConsumer.poll(Duration.ofSeconds(10))
-        records.forEach { logger.info("message from kafka: ${it.value()}") }
+        kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
+            logger.info(
+                "Raw kafka message: ${objectMapper.writeValueAsString(consumerRecord.value())}"
+            )
+            val kafkaRawMessage = consumerRecord.value()
+            val kafakMessage: KafakMessageMetadata = objectMapper.readValue(consumerRecord.value())
+            handleMessage(kafakMessage, kafkaRawMessage)
+        }
     }
 }
 
-data class ApplicationState(
-    var alive: Boolean = true,
-    var ready: Boolean = true,
-)
+fun handleMessage(kafakMessage: KafakMessageMetadata, kafkaRawMessage: String) {
+    logger.info("message from kafka is: $kafakMessage")
+    if (kafakMessage.metadata.type == "sfs_data_test") {
+        val diagnoseData: DataTest =
+            objectMapper.readValue<KafakMessageDataTest>(kafkaRawMessage).data
+        logger.info("diagnoseData from kafka is: $diagnoseData")
+    }
+    logger.info("message from kafka is: $kafakMessage")
+}
