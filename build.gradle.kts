@@ -3,13 +3,14 @@ val junitJupiterVersion = "5.10.0"
 val ktfmtVersion = "0.44"
 val logstashEncoderVersion = "7.4"
 val ktorVersion = "2.3.5"
-val smCommonVersion = "2.0.4"
+val smCommonVersion = "2.0.5"
 val coroutinesVersion = "1.7.3"
 val jacksonVersion = "2.15.2"
+val javaVersion = JavaVersion.VERSION_17
 
 plugins {
     id("application")
-    kotlin("jvm") version "1.9.10"
+    kotlin("jvm") version "1.9.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.22.0"
 }
@@ -47,11 +48,6 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
     implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
-    constraints {
-        implementation("org.xerial.snappy:snappy-java:1.1.10.5") {
-            because("override transient from org.apache.kafka:kafka_2.12")
-        }
-    }
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion") {
         exclude(group = "commons-codec")
@@ -61,6 +57,14 @@ dependencies {
 }
 
 tasks {
+
+    compileKotlin {
+        kotlinOptions.jvmTarget = javaVersion.toString()
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = javaVersion.toString()
+    }
+
 
     shadowJar {
         archiveBaseName.set("app")

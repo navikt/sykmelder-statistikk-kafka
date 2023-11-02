@@ -6,6 +6,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import no.nav.syfo.objectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 
 internal class KafkaMessageTest {
@@ -13,9 +14,15 @@ internal class KafkaMessageTest {
     @Test
     fun `Should map kafakMessage correctly from string to object`() {
         val kafkaMessageString = getFileAsString("src/test/resources/kafkamessage.json")
-        val kafakMessage: KafakMessageMetadata = objectMapper.readValue<KafakMessageMetadata>(kafkaMessageString)
-        val dataTest = objectMapper.readValue<KafakMessageDataTest>(kafkaMessageString).data
-        assertEquals(349531485, dataTest.PK)
+        val kafakMessage: KafakMessageMetadata =
+            objectMapper.readValue<KafakMessageMetadata>(kafkaMessageString)
+        if (kafakMessage.metadata.type == "sfs_data_test") {
+            val dataTest = objectMapper.readValue<KafakMessageDataTest>(kafkaMessageString).data
+            assertEquals(349531485, dataTest.PK)
+        }
+        else {
+            fail("unknown metadata type");
+        }
     }
 }
 
