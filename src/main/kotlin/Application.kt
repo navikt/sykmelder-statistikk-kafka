@@ -102,6 +102,7 @@ private fun start(
 ) {
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
+            logger.info("Raw kafka message: ${objectMapper.writeValueAsString(consumerRecord.value())}")
             val kafakMessage: KafakMessage = objectMapper.readValue(consumerRecord.value())
             handleMessage(kafakMessage)
         }
