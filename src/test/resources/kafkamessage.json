@@ -1,6 +1,24 @@
 {
-  "metadata" : {
+  "metadata": {
     "type": "sfs_data_test"
   },
-  "data": "{\n    \"PK\": 111111111,\n    \"AARMND\": \"202212\",\n    \"SYKM_HOVEDGRUPPE_KODE\": \"ALLM\",\n    \"SYKM_UNDERGRUPPE_KODE\": \"FAST\",\n    \"SYKMELDER_SAMMENL_TYPE_KODE\": \"ALLM\",\n    \"KJONN_KODE\": \"M\",\n    \"ALDER\": 25,\n    \"ALDER_GRUPPE5_BESK\": \"17-29 år\",\n    \"BYDEL_NR\": \"n/a\",\n    \"KOMMUNE_NR\": \"1106\",\n    \"FYLKE_NR\": \"11\",\n    \"ALDER_YRKESAKTIV_FLAGG\": 1,\n    \"NAERING_INNTEKT_KATEGORI\": \"Undervisning \",\n    \"IKKE_ARBEIDSTAKER_FLAGG\": 0,\n    \"RANGERING\": 85,\n    \"PASIENT_ANTALL\": 3,\n    \"ARBEID_ANTALL\": 3\n  }"
+  "data": {
+    "PK": 349531485,
+    "AARMND": "202212",
+    "SYKM_HOVEDGRUPPE_KODE": "ALLM",
+    "SYKM_UNDERGRUPPE_KODE": "FAST",
+    "SYKMELDER_SAMMENL_TYPE_KODE": "ALLM",
+    "KJONN_KODE": "M",
+    "ALDER": 26,
+    "ALDER_GRUPPE5_BESK": "17-29 \u00e5r",
+    "BYDEL_NR": "110302",
+    "KOMMUNE_NR": "1103",
+    "FYLKE_NR": "11",
+    "ALDER_YRKESAKTIV_FLAGG": 1,
+    "NAERING_INNTEKT_KATEGORI": "Undervisning ",
+    "IKKE_ARBEIDSTAKER_FLAGG": 0,
+    "RANGERING": 85,
+    "PASIENT_ANTALL": 1,
+    "ARBEID_ANTALL": 1
+  }
 }

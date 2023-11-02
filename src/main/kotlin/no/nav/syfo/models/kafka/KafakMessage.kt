@@ -1,6 +1,8 @@
 package no.nav.syfo.models.kafka
 
-data class KafakMessage(val data: String, val metadata: Metadata)
+data class KafakMessageMetadata(val metadata: Metadata)
+
+data class KafakMessageDataTest(val data: DataTest, val metadata: Metadata)
 
 data class Metadata(val type: String)
 

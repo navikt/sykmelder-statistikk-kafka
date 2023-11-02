@@ -13,9 +13,9 @@ internal class KafkaMessageTest {
     @Test
     fun `Should map kafakMessage correctly from string to object`() {
         val kafkaMessageString = getFileAsString("src/test/resources/kafkamessage.json")
-        val kafakMessage: KafakMessage = objectMapper.readValue<KafakMessage>(kafkaMessageString)
-        val dataTest = objectMapper.readValue<DataTest>(kafakMessage.data)
-        assertEquals(111111111, dataTest.PK)
+        val kafakMessage: KafakMessageMetadata = objectMapper.readValue<KafakMessageMetadata>(kafkaMessageString)
+        val dataTest = objectMapper.readValue<KafakMessageDataTest>(kafkaMessageString).data
+        assertEquals(349531485, dataTest.PK)
     }
 }
 

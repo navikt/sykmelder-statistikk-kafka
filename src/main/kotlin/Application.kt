@@ -21,7 +21,8 @@ import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.syfo.models.application.ApplicationState
 import no.nav.syfo.models.application.EnvironmentVariables
 import no.nav.syfo.models.kafka.DataTest
-import no.nav.syfo.models.kafka.KafakMessage
+import no.nav.syfo.models.kafka.KafakMessageDataTest
+import no.nav.syfo.models.kafka.KafakMessageMetadata
 import no.nav.syfo.plugins.configureRouting
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -102,17 +103,21 @@ private fun start(
 ) {
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
-            logger.info("Raw kafka message: ${objectMapper.writeValueAsString(consumerRecord.value())}")
-            val kafakMessage: KafakMessage = objectMapper.readValue(consumerRecord.value())
-            handleMessage(kafakMessage)
+            logger.info(
+                "Raw kafka message: ${objectMapper.writeValueAsString(consumerRecord.value())}"
+            )
+            val kafkaRawMessage = consumerRecord.value()
+            val kafakMessage: KafakMessageMetadata = objectMapper.readValue(consumerRecord.value())
+            handleMessage(kafakMessage, kafkaRawMessage)
         }
     }
 }
 
-fun handleMessage(kafakMessage: KafakMessage) {
+fun handleMessage(kafakMessage: KafakMessageMetadata, kafkaRawMessage: String) {
     logger.info("message from kafka is: $kafakMessage")
     if (kafakMessage.metadata.type == "sfs_data_test") {
-        val diagnoseData: DataTest = objectMapper.readValue(kafakMessage.data)
+        val diagnoseData: DataTest =
+            objectMapper.readValue<KafakMessageDataTest>(kafkaRawMessage).data
         logger.info("diagnoseData from kafka is: $diagnoseData")
     }
     logger.info("message from kafka is: $kafakMessage")
