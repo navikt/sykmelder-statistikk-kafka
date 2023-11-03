@@ -23,6 +23,11 @@ import no.nav.syfo.models.application.EnvironmentVariables
 import no.nav.syfo.models.kafka.DataTest
 import no.nav.syfo.models.kafka.KafakMessageDataTest
 import no.nav.syfo.models.kafka.KafakMessageMetadata
+import no.nav.syfo.no.nav.syfo.models.HouvedGruppe
+import no.nav.syfo.no.nav.syfo.models.Kjonn
+import no.nav.syfo.no.nav.syfo.models.SykmelderStatestikk
+import no.nav.syfo.no.nav.syfo.models.Type
+import no.nav.syfo.no.nav.syfo.models.UnderGruppe
 import no.nav.syfo.plugins.configureRouting
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -112,9 +117,34 @@ private fun start(
 
 fun handleMessage(kafakMessage: KafakMessageMetadata, kafkaRawMessage: String) {
     if (kafakMessage.metadata.type == "sfs_data_test") {
-        val diagnoseData: DataTest =
+        val kafkaDiagnoseData: DataTest =
             objectMapper.readValue<KafakMessageDataTest>(kafkaRawMessage).data
-        logger.info("diagnoseData from kafka is: $diagnoseData")
+        logger.info("diagnoseData from kafka is: $kafkaDiagnoseData")
+
+        val sykmelderStatestikk = kafkaDiagnoseData.toSykmelderStatestikk()
+        logger.info("sykmelderStatestikk is: $sykmelderStatestikk")
     }
     logger.info("message from kafka is: $kafakMessage")
+}
+
+fun DataTest.toSykmelderStatestikk(): SykmelderStatestikk {
+    return SykmelderStatestikk(
+        primaryKey = PK,
+        houvedGruppe = HouvedGruppe.valueOf(SYKM_HOVEDGRUPPE_KODE),
+        underGruppe = UnderGruppe.valueOf(SYKM_UNDERGRUPPE_KODE),
+        type = Type.valueOf(SYKMELDER_SAMMENL_TYPE_KODE),
+        kjonn = Kjonn.valueOf(KJONN_KODE),
+        alder = ALDER,
+        aar = AARMND.slice(0..3),
+        mnd = AARMND.slice(4..5),
+        bydelNr = BYDEL_NR,
+        fylkeNr = FYLKE_NR,
+        kommuneNr = KOMMUNE_NR,
+        aarYrkesAktiv = ALDER_YRKESAKTIV_FLAGG,
+        naringInntektKategori = NAERING_INNTEKT_KATEGORI,
+        ikkeArbeidstaker = IKKE_ARBEIDSTAKER_FLAGG == 0,
+        rangering = RANGERING,
+        antallPasienter = PASIENT_ANTALL,
+        antallPasienterIArbeid = ARBEID_ANTALL
+    )
 }

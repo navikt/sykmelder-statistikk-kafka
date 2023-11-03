@@ -19,9 +19,8 @@ internal class KafkaMessageTest {
         if (kafakMessage.metadata.type == "sfs_data_test") {
             val dataTest = objectMapper.readValue<KafakMessageDataTest>(kafkaMessageString).data
             assertEquals(349531485, dataTest.PK)
-        }
-        else {
-            fail("unknown metadata type");
+        } else {
+            fail("unknown metadata type")
         }
     }
 }
