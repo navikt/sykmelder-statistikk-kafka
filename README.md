@@ -7,7 +7,7 @@ Tool for sykmelder to compare their sick leave practice with that of others sykm
 * Gradle
 * Junit
 * Docker
-* JDK
+* JDK 17
 
 ### Prerequisites
 Make sure you have JDK installed using this command:
@@ -21,6 +21,16 @@ Make sure you have docker installed using this command:
 ```bash script
 docker --version
 ```
+
+
+## FlowChart
+This the high level flow of the application
+```mermaid
+  graph LR
+      id1([disykefravar.sfs-data]) ---> sykmelder-statistikk-kafka
+      sykmelder-statistikk-kafka <---> sykmelder-statistikk
+```
+
 
 ## Getting started
 
