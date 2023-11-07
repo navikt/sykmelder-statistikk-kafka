@@ -1,75 +1,30 @@
 package no.nav.syfo.plugins
 
 import io.ktor.http.*
+import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import no.nav.syfo.models.application.ApplicationState
-import no.nav.syfo.plugins.nais.isalive.naisIsAliveRoute
-import no.nav.syfo.plugins.nais.isready.naisIsReadyRoute
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 internal class RoutingTest {
     @Test
-    internal fun `Returns ok on is_alive`() {
+    internal fun `Returns ok on swaggerUI when cluster dev-gcp`() {
         with(TestApplicationEngine()) {
             start()
+            val naisClusterName = "dev-gcp"
             val applicationState = ApplicationState()
             applicationState.ready = true
             applicationState.alive = true
-            application.routing { naisIsAliveRoute(applicationState) }
+            application.routing {
+                if (naisClusterName == "dev-gcp" || naisClusterName == "localhost") {
+                    swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
+                }
+            }
 
-            with(handleRequest(HttpMethod.Get, "/internal/is_alive")) {
+            with(handleRequest(HttpMethod.Get, "/swagger")) {
                 Assertions.assertEquals(HttpStatusCode.OK, response.status())
-                Assertions.assertEquals("I'm alive! :)", response.content)
-            }
-        }
-    }
-
-    @Test
-    internal fun `Returns ok in is_ready`() {
-        with(TestApplicationEngine()) {
-            start()
-            val applicationState = ApplicationState()
-            applicationState.ready = true
-            applicationState.alive = true
-            application.routing { naisIsReadyRoute(applicationState) }
-
-            with(handleRequest(HttpMethod.Get, "/internal/is_ready")) {
-                Assertions.assertEquals(HttpStatusCode.OK, response.status())
-                Assertions.assertEquals("I'm ready! :)", response.content)
-            }
-        }
-    }
-
-    @Test
-    internal fun `Returns internal server error when liveness check fails`() {
-        with(TestApplicationEngine()) {
-            start()
-            val applicationState = ApplicationState()
-            applicationState.ready = false
-            applicationState.alive = false
-            application.routing { naisIsAliveRoute(applicationState) }
-
-            with(handleRequest(HttpMethod.Get, "/internal/is_alive")) {
-                Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status())
-                Assertions.assertEquals("I'm dead x_x", response.content)
-            }
-        }
-    }
-
-    @Test
-    internal fun `Returns internal server error when readyness check fails`() {
-        with(TestApplicationEngine()) {
-            start()
-            val applicationState = ApplicationState()
-            applicationState.ready = false
-            applicationState.alive = false
-            application.routing { naisIsReadyRoute(applicationState) }
-
-            with(handleRequest(HttpMethod.Get, "/internal/is_ready")) {
-                Assertions.assertEquals(HttpStatusCode.InternalServerError, response.status())
-                Assertions.assertEquals("Please wait! I'm not ready :(", response.content)
             }
         }
     }
