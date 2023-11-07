@@ -7,8 +7,8 @@ import io.ktor.server.plugins.swagger.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.syfo.models.application.ApplicationState
-import no.nav.syfo.plugins.nais.isalive.naisIsAliveRoute
-import no.nav.syfo.plugins.nais.isready.naisIsReadyRoute
+import no.nav.syfo.no.nav.syfo.routes.nais.isalive.naisIsAliveRoute
+import no.nav.syfo.no.nav.syfo.routes.nais.isready.naisIsReadyRoute
 
 fun Application.configureRouting(applicationState: ApplicationState, naisClusterName: String) {
     install(StatusPages) {

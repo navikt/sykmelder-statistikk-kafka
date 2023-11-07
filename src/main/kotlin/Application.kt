@@ -110,24 +110,25 @@ private fun start(
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
             val kafkaRawMessage = consumerRecord.value()
             val kafakMessage: KafakMessageMetadata = objectMapper.readValue(consumerRecord.value())
-            handleMessage(kafakMessage, kafkaRawMessage)
+
+            if (kafakMessage.metadata.type == "sfs_data_test") {
+                val kafkaDiagnoseData: DataTest =
+                    objectMapper.readValue<KafakMessageDataTest>(kafkaRawMessage).data
+                logger.info("diagnoseData from kafka is: $kafkaDiagnoseData")
+
+                handleMessageKafkaDiagnoseData(kafkaDiagnoseData)
+            } else {
+                throw IllegalArgumentException(
+                    "Unknown metadata type, kafka message is: ${objectMapper.writeValueAsString(kafakMessage)}"
+                )
+            }
         }
     }
 }
 
-fun handleMessage(kafakMessage: KafakMessageMetadata, kafkaRawMessage: String) {
-    if (kafakMessage.metadata.type == "sfs_data_test") {
-        val kafkaDiagnoseData: DataTest =
-            objectMapper.readValue<KafakMessageDataTest>(kafkaRawMessage).data
-        logger.info("diagnoseData from kafka is: $kafkaDiagnoseData")
-
-        val sykmelderStatestikk = kafkaDiagnoseData.toSykmelderStatestikk()
-        logger.info("sykmelderStatestikk is: $sykmelderStatestikk")
-    } else {
-        throw IllegalArgumentException(
-            "Unknown metadata type, kafka message is: ${objectMapper.writeValueAsString(kafakMessage)}"
-        )
-    }
+fun handleMessageKafkaDiagnoseData(kafkaDiagnoseData: DataTest) {
+    val sykmelderStatestikk = kafkaDiagnoseData.toSykmelderStatestikk()
+    logger.info("sykmelderStatestikk is: $sykmelderStatestikk")
 }
 
 fun DataTest.toSykmelderStatestikk(): SykmelderStatestikk {

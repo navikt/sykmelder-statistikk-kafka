@@ -1,10 +1,10 @@
-package no.nav.syfo.plugins.isalive
+package no.nav.syfo.routes.nais.isalive
 
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import no.nav.syfo.models.application.ApplicationState
-import no.nav.syfo.plugins.nais.isalive.naisIsAliveRoute
+import no.nav.syfo.no.nav.syfo.routes.nais.isalive.naisIsAliveRoute
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

@@ -1,4 +1,4 @@
-package no.nav.syfo.plugins.nais.isalive
+package no.nav.syfo.no.nav.syfo.routes.nais.isalive
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call

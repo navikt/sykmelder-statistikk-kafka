@@ -1,10 +1,10 @@
-package no.nav.syfo.plugins.isready
+package no.nav.syfo.routes.nais.isready
 
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import no.nav.syfo.models.application.ApplicationState
-import no.nav.syfo.plugins.nais.isready.naisIsReadyRoute
+import no.nav.syfo.no.nav.syfo.routes.nais.isready.naisIsReadyRoute
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
