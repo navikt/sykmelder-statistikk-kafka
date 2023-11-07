@@ -1,4 +1,4 @@
-package no.nav.syfo.no.nav.syfo.models
+package no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk
 
 data class SykmelderStatestikk(
     val primaryKey: Int,

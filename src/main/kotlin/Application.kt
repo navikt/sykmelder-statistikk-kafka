@@ -23,11 +23,11 @@ import no.nav.syfo.models.application.EnvironmentVariables
 import no.nav.syfo.models.kafka.DataTest
 import no.nav.syfo.models.kafka.KafakMessageDataTest
 import no.nav.syfo.models.kafka.KafakMessageMetadata
-import no.nav.syfo.no.nav.syfo.models.HouvedGruppe
-import no.nav.syfo.no.nav.syfo.models.Kjonn
-import no.nav.syfo.no.nav.syfo.models.SykmelderStatestikk
-import no.nav.syfo.no.nav.syfo.models.Type
-import no.nav.syfo.no.nav.syfo.models.UnderGruppe
+import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.HouvedGruppe
+import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.Kjonn
+import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.SykmelderStatestikk
+import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.Type
+import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.UnderGruppe
 import no.nav.syfo.plugins.configureRouting
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -123,8 +123,11 @@ fun handleMessage(kafakMessage: KafakMessageMetadata, kafkaRawMessage: String) {
 
         val sykmelderStatestikk = kafkaDiagnoseData.toSykmelderStatestikk()
         logger.info("sykmelderStatestikk is: $sykmelderStatestikk")
+    } else {
+        throw IllegalArgumentException(
+            "Unknown metadata type, kafka message is: ${objectMapper.writeValueAsString(kafakMessage)}"
+        )
     }
-    logger.info("message from kafka is: $kafakMessage")
 }
 
 fun DataTest.toSykmelderStatestikk(): SykmelderStatestikk {
