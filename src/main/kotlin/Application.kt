@@ -145,7 +145,7 @@ fun DataTest.toSykmelderStatestikk(): SykmelderStatestikk {
         fylkeNr = FYLKE_NR,
         kommuneNr = KOMMUNE_NR,
         aarYrkesAktiv = ALDER_YRKESAKTIV_FLAGG,
-        naringInntektKategori = NAERING_INNTEKT_KATEGORI,
+        naringInntektKategori = NAERING_INNTEKT_KATEGORI.trim(),
         ikkeArbeidstaker = IKKE_ARBEIDSTAKER_FLAGG == 0,
         rangering = RANGERING,
         antallPasienter = PASIENT_ANTALL,
