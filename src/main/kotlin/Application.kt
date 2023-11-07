@@ -36,6 +36,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.sykmelder.statistikk.kafka")
+val securelogger: Logger = LoggerFactory.getLogger("securelog")
+
 val objectMapper: ObjectMapper =
     ObjectMapper()
         .registerModule(JavaTimeModule())
@@ -114,7 +116,7 @@ private fun start(
             if (kafakMessage.metadata.type == "sfs_data_test") {
                 val kafkaDiagnoseData: DataTest =
                     objectMapper.readValue<KafakMessageDataTest>(kafkaRawMessage).data
-                logger.info("diagnoseData from kafka is: $kafkaDiagnoseData")
+                securelogger.info("diagnoseData from kafka is: $kafkaDiagnoseData")
 
                 handleMessageKafkaDiagnoseData(kafkaDiagnoseData)
             } else {
@@ -128,7 +130,7 @@ private fun start(
 
 fun handleMessageKafkaDiagnoseData(kafkaDiagnoseData: DataTest) {
     val sykmelderStatestikk = kafkaDiagnoseData.toSykmelderStatestikk()
-    logger.info("sykmelderStatestikk is: $sykmelderStatestikk")
+    securelogger.info("sykmelderStatestikk is: $sykmelderStatestikk")
 }
 
 fun DataTest.toSykmelderStatestikk(): SykmelderStatestikk {
