@@ -11,6 +11,21 @@ spec:
     min: 1
     max: 2
     cpuThresholdPercentage: 90
+  gcp:
+    sqlInstances:
+      - name: sykmelder-statistikk
+        type: POSTGRES_14
+        diskSize: 10
+        databases:
+          - name: statistikk
+            envVarPrefix: DB
+            users:
+              - name: sykmelder-statistikk-next
+        diskAutoresize: true
+        highAvailability: false
+        diskType: SSD
+        insights:
+          enabled: true
   port: 8080
   liveness:
     path: /internal/is_alive
