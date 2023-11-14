@@ -6,6 +6,9 @@ val ktorVersion = "2.3.6"
 val smCommonVersion = "2.0.6"
 val coroutinesVersion = "1.7.3"
 val jacksonVersion = "2.15.3"
+val flywayVersion = "9.22.3"
+val postgresVersion = "42.6.0"
+val hikariVersion = "5.0.1"
 val javaVersion = JavaVersion.VERSION_17
 
 plugins {
@@ -48,6 +51,10 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
     implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
+
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("org.postgresql:postgresql:$postgresVersion")
+    implementation("com.zaxxer:HikariCP:$hikariVersion")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion") {
         exclude(group = "commons-codec")
