@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import no.nav.syfo.application.database.Database
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.syfo.models.application.ApplicationState
@@ -66,6 +67,7 @@ fun main() {
 fun Application.module() {
     val environmentVariables = EnvironmentVariables()
     val applicationState = ApplicationState()
+    Database(environmentVariables)
     configureRouting(applicationState, environmentVariables.naisClusterName)
 
     val kafkaConsumer =
