@@ -5,11 +5,24 @@ import io.ktor.server.application.call
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
+import no.nav.sykmelderstatistikk.database.selectAllTestStuff
 import no.nav.sykmelderstatistikk.models.application.ApplicationState
 
 fun Routing.naisInternalRoutes(
     applicationState: ApplicationState,
 ) {
+    get("/internal/test_exposed") {
+        println("Hallo entry!")
+
+        selectAllTestStuff().forEach {
+            println(it)
+        }
+
+        println("Hallo!")
+
+        call.respondText("IS OK!")
+    }
+
     get("/internal/is_alive") {
         if (applicationState.alive) {
             call.respondText("I'm alive! :)")
@@ -24,7 +37,7 @@ fun Routing.naisInternalRoutes(
         } else {
             call.respondText(
                 "Please wait! I'm not ready :(",
-                status = HttpStatusCode.InternalServerError
+                status = HttpStatusCode.InternalServerError,
             )
         }
     }

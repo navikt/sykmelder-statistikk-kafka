@@ -5,6 +5,8 @@ import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -37,4 +39,9 @@ class ExposedDatabase(
                 .migrate()
         }
     }
+}
+
+
+fun selectAllTestStuff() = transaction {
+    TestTable.selectAll().toList()
 }
