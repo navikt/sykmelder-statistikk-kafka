@@ -1,7 +1,7 @@
-package no.nav.syfo.models
+package no.nav.sykmelderstatistikk.models
 
-import no.nav.syfo.models.kafka.DataTest
-import no.nav.syfo.toSykmelderStatestikk
+import no.nav.sykmelderstatistikk.models.kafka.DataTest
+import no.nav.sykmelderstatistikk.toSykmelderStatestikk
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

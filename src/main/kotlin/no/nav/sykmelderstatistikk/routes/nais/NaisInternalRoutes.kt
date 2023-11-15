@@ -1,18 +1,25 @@
-package no.nav.syfo.no.nav.syfo.routes.nais.isready
+package no.nav.sykmelderstatistikk.routes.nais
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
-import no.nav.syfo.models.application.ApplicationState
+import no.nav.sykmelderstatistikk.models.application.ApplicationState
 
-fun Routing.naisIsReadyRoute(
+fun Routing.naisInternalRoutes(
     applicationState: ApplicationState,
-    readynessCheck: () -> Boolean = { applicationState.ready },
 ) {
+    get("/internal/is_alive") {
+        if (applicationState.alive) {
+            call.respondText("I'm alive! :)")
+        } else {
+            call.respondText("I'm dead x_x", status = HttpStatusCode.InternalServerError)
+        }
+    }
+
     get("/internal/is_ready") {
-        if (readynessCheck()) {
+        if (applicationState.ready) {
             call.respondText("I'm ready! :)")
         } else {
             call.respondText(

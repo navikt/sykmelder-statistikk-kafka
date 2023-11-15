@@ -8,7 +8,7 @@ val coroutinesVersion = "1.7.3"
 val jacksonVersion = "2.15.3"
 val flywayVersion = "9.22.3"
 val postgresVersion = "42.6.0"
-val hikariVersion = "5.0.1"
+val exposedVersion = "0.44.1"
 val javaVersion = JavaVersion.VERSION_17
 
 plugins {
@@ -18,11 +18,11 @@ plugins {
     id("com.diffplug.spotless") version "6.22.0"
 }
 
-group = "no.nav.syfo"
+group = "no.nav.sykmelderstatistikk"
 version = "0.0.1"
 
 application {
-    mainClass.set("no.nav.syfo.ApplicationKt")
+    mainClass.set("no.nav.sykmelderstatistikk.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
@@ -54,7 +54,8 @@ dependencies {
 
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("org.postgresql:postgresql:$postgresVersion")
-    implementation("com.zaxxer:HikariCP:$hikariVersion")
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion") {
         exclude(group = "commons-codec")
@@ -80,7 +81,7 @@ tasks {
         manifest {
             attributes(
                 mapOf(
-                    "Main-Class" to "no.nav.syfo.ApplicationKt",
+                    "Main-Class" to "no.nav.sykmelderstatistikk.ApplicationKt",
                 ),
             )
         }
