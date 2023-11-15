@@ -1,10 +1,10 @@
-package no.nav.syfo.plugins
+package no.nav.sykmelderstatistikk.plugins
 
 import io.ktor.http.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
-import no.nav.syfo.models.application.ApplicationState
+import no.nav.sykmelderstatistikk.models.application.ApplicationState
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

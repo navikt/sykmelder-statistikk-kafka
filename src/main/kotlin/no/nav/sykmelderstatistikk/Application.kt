@@ -1,4 +1,4 @@
-package no.nav.syfo
+package no.nav.sykmelderstatistikk
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -16,27 +16,27 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import no.nav.syfo.application.database.Database
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
-import no.nav.syfo.models.application.ApplicationState
-import no.nav.syfo.models.application.EnvironmentVariables
-import no.nav.syfo.models.kafka.DataTest
-import no.nav.syfo.models.kafka.KafakMessageDataTest
-import no.nav.syfo.models.kafka.KafakMessageMetadata
-import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.HouvedGruppe
-import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.Kjonn
-import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.SykmelderStatestikk
-import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.Type
-import no.nav.syfo.no.nav.syfo.models.sykmelderStatestikk.UnderGruppe
-import no.nav.syfo.plugins.configureRouting
+import no.nav.sykmelderstatistikk.database.ExposedDatabase
+import no.nav.sykmelderstatistikk.models.application.ApplicationState
+import no.nav.sykmelderstatistikk.models.application.EnvironmentVariables
+import no.nav.sykmelderstatistikk.models.kafka.DataTest
+import no.nav.sykmelderstatistikk.models.kafka.KafakMessageDataTest
+import no.nav.sykmelderstatistikk.models.kafka.KafakMessageMetadata
+import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.HouvedGruppe
+import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.Kjonn
+import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.SykmelderStatestikk
+import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.Type
+import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.UnderGruppe
+import no.nav.sykmelderstatistikk.plugins.configureRouting
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.sykmelder.statistikk.kafka")
+val logger: Logger = LoggerFactory.getLogger("no.nav.sykmelderstatistikk.kafka")
 val securelogger: Logger = LoggerFactory.getLogger("securelog")
 
 val objectMapper: ObjectMapper =
@@ -67,7 +67,7 @@ fun main() {
 fun Application.module() {
     val environmentVariables = EnvironmentVariables()
     val applicationState = ApplicationState()
-    Database(environmentVariables)
+    ExposedDatabase(environmentVariables)
     configureRouting(applicationState, environmentVariables.naisClusterName)
 
     val kafkaConsumer =

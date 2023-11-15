@@ -1,4 +1,4 @@
-package no.nav.syfo.models.application
+package no.nav.sykmelderstatistikk.models.application
 
 data class ApplicationState(
     var alive: Boolean = true,

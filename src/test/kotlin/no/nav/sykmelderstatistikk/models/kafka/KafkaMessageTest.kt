@@ -1,10 +1,10 @@
-package no.nav.syfo.models.kafka
+package no.nav.sykmelderstatistikk.models.kafka
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
-import no.nav.syfo.objectMapper
+import no.nav.sykmelderstatistikk.objectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test

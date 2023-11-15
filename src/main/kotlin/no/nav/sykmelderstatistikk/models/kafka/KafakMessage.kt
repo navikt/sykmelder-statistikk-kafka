@@ -1,4 +1,4 @@
-package no.nav.syfo.models.kafka
+package no.nav.sykmelderstatistikk.models.kafka
 
 data class KafakMessageMetadata(val metadata: Metadata)
 
