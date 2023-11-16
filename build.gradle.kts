@@ -10,6 +10,9 @@ val flywayVersion = "9.22.3"
 val postgresVersion = "42.6.0"
 val exposedVersion = "0.44.1"
 val javaVersion = JavaVersion.VERSION_17
+val testContainersVersion = "1.19.1"
+val mockkVersion = "1.13.8"
+val kluentVersion = "1.73"
 
 plugins {
     id("application")
@@ -56,7 +59,9 @@ dependencies {
     implementation("org.postgresql:postgresql:$postgresVersion")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-
+    testImplementation("org.testcontainers:postgresql:$testContainersVersion")
+    testImplementation("org.amshove.kluent:kluent:$kluentVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion") {
         exclude(group = "commons-codec")
     }
