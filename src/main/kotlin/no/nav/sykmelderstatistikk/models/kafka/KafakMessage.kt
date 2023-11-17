@@ -1,8 +1,6 @@
 package no.nav.sykmelderstatistikk.models.kafka
 
-data class KafakMessageMetadata(val metadata: Metadata)
-
-data class KafakMessageDataTest(val data: DataTest, val metadata: Metadata)
+data class KafkaMessageDataTest(val data: DataTest, val metadata: Metadata)
 
 data class Metadata(val type: String)
 

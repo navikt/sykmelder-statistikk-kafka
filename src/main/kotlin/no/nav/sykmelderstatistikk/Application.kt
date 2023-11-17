@@ -22,8 +22,7 @@ import no.nav.sykmelderstatistikk.database.ExposedDatabase
 import no.nav.sykmelderstatistikk.models.application.ApplicationState
 import no.nav.sykmelderstatistikk.models.application.EnvironmentVariables
 import no.nav.sykmelderstatistikk.models.kafka.DataTest
-import no.nav.sykmelderstatistikk.models.kafka.KafakMessageDataTest
-import no.nav.sykmelderstatistikk.models.kafka.KafakMessageMetadata
+import no.nav.sykmelderstatistikk.models.kafka.KafkaMessageDataTest
 import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.HouvedGruppe
 import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.Kjonn
 import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.SykmelderStatestikk
@@ -113,14 +112,13 @@ private fun start(
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
             val kafkaRawMessage = consumerRecord.value()
-            val kafakMessage: KafakMessageMetadata = objectMapper.readValue(consumerRecord.value())
+            val kafakMessage: KafkaMessageDataTest = objectMapper.readValue(consumerRecord.value())
 
             if (kafakMessage.metadata.type == "sfs_data_test") {
-                val kafkaDiagnoseData: DataTest =
-                    objectMapper.readValue<KafakMessageDataTest>(kafkaRawMessage).data
-                securelogger.info("diagnoseData from kafka is: $kafkaDiagnoseData")
 
-                handleMessageKafkaDiagnoseData(kafkaDiagnoseData)
+                securelogger.info("diagnoseData from kafka is: $kafakMessage")
+
+                handleMessageKafkaDiagnoseData(kafakMessage)
             } else {
                 throw IllegalArgumentException(
                     "Unknown metadata type, kafka message is: ${objectMapper.writeValueAsString(kafakMessage)}"
@@ -130,8 +128,9 @@ private fun start(
     }
 }
 
-fun handleMessageKafkaDiagnoseData(kafkaDiagnoseData: DataTest) {
-    val sykmelderStatestikk = kafkaDiagnoseData.toSykmelderStatestikk()
+fun handleMessageKafkaDiagnoseData(kafkaDiagnoseData: KafkaMessageDataTest) {
+    val sykmelderStatestikk = kafkaDiagnoseData.data.toSykmelderStatestikk()
+
     securelogger.info("sykmelderStatestikk is: $sykmelderStatestikk")
 }
 

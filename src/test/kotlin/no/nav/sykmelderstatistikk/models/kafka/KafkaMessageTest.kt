@@ -14,11 +14,10 @@ internal class KafkaMessageTest {
     @Test
     fun `Should map kafakMessage correctly from string to object`() {
         val kafkaMessageString = getFileAsString("src/test/resources/kafkamessage.json")
-        val kafakMessage: KafakMessageMetadata =
-            objectMapper.readValue<KafakMessageMetadata>(kafkaMessageString)
+        val kafakMessage: KafkaMessageDataTest =
+            objectMapper.readValue<KafkaMessageDataTest>(kafkaMessageString)
         if (kafakMessage.metadata.type == "sfs_data_test") {
-            val dataTest = objectMapper.readValue<KafakMessageDataTest>(kafkaMessageString).data
-            assertEquals(349531485, dataTest.PK)
+            assertEquals(349531485, kafakMessage.data.PK)
         } else {
             fail("unknown metadata type")
         }
