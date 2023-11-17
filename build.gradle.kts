@@ -10,7 +10,7 @@ val flywayVersion = "9.22.3"
 val postgresVersion = "42.6.0"
 val exposedVersion = "0.44.1"
 val javaVersion = JavaVersion.VERSION_17
-val testContainersVersion = "1.19.1"
+val testContainersVersion = "1.19.2"
 val mockkVersion = "1.13.8"
 val kluentVersion = "1.73"
 
