@@ -11,24 +11,15 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import java.time.Duration
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.sykmelderstatistikk.database.ExposedDatabase
 import no.nav.sykmelderstatistikk.models.application.ApplicationState
 import no.nav.sykmelderstatistikk.models.application.EnvironmentVariables
-import no.nav.sykmelderstatistikk.models.kafka.DataTest
-import no.nav.sykmelderstatistikk.models.kafka.KafkaMessageDataTest
-import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.HouvedGruppe
-import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.Kjonn
-import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.SykmelderStatestikk
-import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.Type
-import no.nav.sykmelderstatistikk.models.sykmelderStatestikk.UnderGruppe
 import no.nav.sykmelderstatistikk.plugins.configureRouting
+import no.nav.sykmelderstatistikk.sfsdatatest.KafkaMessageSfsDataTest
+import no.nav.sykmelderstatistikk.sfsdatatest.handleSfsData
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -111,14 +102,12 @@ private fun start(
 ) {
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
-            val kafkaRawMessage = consumerRecord.value()
-            val kafakMessage: KafkaMessageDataTest = objectMapper.readValue(consumerRecord.value())
+            val kafakMessage: KafkaMessageSfsDataTest =
+                objectMapper.readValue(consumerRecord.value())
 
             if (kafakMessage.metadata.type == "sfs_data_test") {
-
                 securelogger.info("diagnoseData from kafka is: $kafakMessage")
-
-                handleMessageKafkaDiagnoseData(kafakMessage)
+                handleSfsData(kafakMessage)
             } else {
                 throw IllegalArgumentException(
                     "Unknown metadata type, kafka message is: ${objectMapper.writeValueAsString(kafakMessage)}"
@@ -126,32 +115,4 @@ private fun start(
             }
         }
     }
-}
-
-fun handleMessageKafkaDiagnoseData(kafkaDiagnoseData: KafkaMessageDataTest) {
-    val sykmelderStatestikk = kafkaDiagnoseData.data.toSykmelderStatestikk()
-
-    securelogger.info("sykmelderStatestikk is: $sykmelderStatestikk")
-}
-
-fun DataTest.toSykmelderStatestikk(): SykmelderStatestikk {
-    return SykmelderStatestikk(
-        primaryKey = PK,
-        houvedGruppe = HouvedGruppe.valueOf(SYKM_HOVEDGRUPPE_KODE),
-        underGruppe = UnderGruppe.valueOf(SYKM_UNDERGRUPPE_KODE),
-        type = Type.valueOf(SYKMELDER_SAMMENL_TYPE_KODE),
-        kjonn = Kjonn.valueOf(KJONN_KODE),
-        alder = ALDER,
-        aar = AARMND.slice(0..3),
-        mnd = AARMND.slice(4..5),
-        bydelNr = BYDEL_NR,
-        fylkeNr = FYLKE_NR,
-        kommuneNr = KOMMUNE_NR,
-        aarYrkesAktiv = ALDER_YRKESAKTIV_FLAGG,
-        naringInntektKategori = NAERING_INNTEKT_KATEGORI.trim(),
-        ikkeArbeidstaker = IKKE_ARBEIDSTAKER_FLAGG == 0,
-        rangering = RANGERING,
-        antallPasienter = PASIENT_ANTALL,
-        antallPasienterIArbeid = ARBEID_ANTALL
-    )
 }
