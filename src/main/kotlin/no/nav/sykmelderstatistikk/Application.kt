@@ -18,6 +18,8 @@ import no.nav.sykmelderstatistikk.database.ExposedDatabase
 import no.nav.sykmelderstatistikk.models.application.ApplicationState
 import no.nav.sykmelderstatistikk.models.application.EnvironmentVariables
 import no.nav.sykmelderstatistikk.plugins.configureRouting
+import no.nav.sykmelderstatistikk.sfsdataalle.KafkaMessageSfsDataAlle
+import no.nav.sykmelderstatistikk.sfsdataalle.handleSfsDataAlle
 import no.nav.sykmelderstatistikk.sfsdatatest.KafkaMessageSfsDataTest
 import no.nav.sykmelderstatistikk.sfsdatatest.handleSfsData
 import org.apache.kafka.clients.consumer.ConsumerConfig
@@ -102,16 +104,25 @@ private fun start(
 ) {
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
-            val kafakMessage: KafkaMessageSfsDataTest =
-                objectMapper.readValue(consumerRecord.value())
-
-            if (kafakMessage.metadata.type == "sfs_data_test") {
-                securelogger.info("diagnoseData from kafka is: $kafakMessage")
-                handleSfsData(kafakMessage)
-            } else {
-                throw IllegalArgumentException(
-                    "Unknown metadata type, kafka message is: ${objectMapper.writeValueAsString(kafakMessage)}"
-                )
+            val metadata = objectMapper.readTree(consumerRecord.value())
+            when (metadata.path("metadata").path("type").asText()) {
+                "sfs_data_test" -> {
+                    val kafakMessage: KafkaMessageSfsDataTest =
+                        objectMapper.readValue(consumerRecord.value())
+                    securelogger.info("diagnoseData from kafka is: $kafakMessage")
+                    handleSfsData(kafakMessage)
+                }
+                "AGG_SFS_VARIGHET_ALLE" -> {
+                    val kafakMessage: KafkaMessageSfsDataAlle =
+                        objectMapper.readValue(consumerRecord.value())
+                    securelogger.info("diagnoseData from kafka is: $kafakMessage")
+                    handleSfsDataAlle(kafakMessage)
+                }
+                else -> {
+                    throw IllegalArgumentException(
+                        "Unknown metadata type, kafka message is: ${objectMapper.writeValueAsString(metadata.path("metadata"))}"
+                    )
+                }
             }
         }
     }

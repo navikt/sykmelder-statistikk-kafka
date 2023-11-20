@@ -1,8 +1,8 @@
 package no.nav.sykmelderstatistikk.sfsdatatest
 
-data class KafkaMessageSfsDataTest(val data: SfsDataTestPayload, val metadata: SfsMetadata)
+data class KafkaMessageSfsDataTest(val data: SfsDataTestPayload, val metadata: SfsMetadataTest)
 
-data class SfsMetadata(val type: String)
+data class SfsMetadataTest(val type: String)
 
 data class SfsDataTestPayload(
     val PK: Int,
