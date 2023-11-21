@@ -2,14 +2,14 @@ package no.nav.sykmelderstatistikk.sfsdatatest
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.sykmelderstatistikk.config.EnvironmentVariables
 import no.nav.sykmelderstatistikk.database.ExposedDatabase
 import no.nav.sykmelderstatistikk.database.TestDb
-import no.nav.sykmelderstatistikk.models.application.EnvironmentVariables
-import no.nav.sykmelderstatistikk.sfsdataalle.KafkaMessageSfsDataAlle
-import no.nav.sykmelderstatistikk.sfsdataalle.SfsDataAlle
-import no.nav.sykmelderstatistikk.sfsdataalle.SfsDataAllePayload
-import no.nav.sykmelderstatistikk.sfsdataalle.SfsMetadata
-import no.nav.sykmelderstatistikk.sfsdataalle.handleSfsDataAlle
+import no.nav.sykmelderstatistikk.database.upsertdatabase.sfsdatatest.SfsDataTest
+import no.nav.sykmelderstatistikk.database.upsertdatabase.sfsdatatest.handleSfsData
+import no.nav.sykmelderstatistikk.database.upsertdatabase.sfsvarighetalle.SfsVarighetAlle
+import no.nav.sykmelderstatistikk.database.upsertdatabase.sfsvarighetalle.handleSfsVarighetAlle
+import no.nav.sykmelderstatistikk.models.*
 import org.amshove.kluent.shouldBeEqualTo
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -68,11 +68,11 @@ class SfsDatabaseTest {
 
     @Test
     fun `Test save sfs alle data`() {
-        handleSfsDataAlle(
-            KafkaMessageSfsDataAlle(
+        handleSfsVarighetAlle(
+            KafkaMessageSfsVarighetAlle(
                 metadata = SfsMetadata(type = "sfs_data_test"),
                 data =
-                    SfsDataAllePayload(
+                    SfsVarighetAllePayload(
                         PK = 96,
                         AARMND = "todo",
                         SYKM_BYDEL_NAVN = "todo",
@@ -94,9 +94,9 @@ class SfsDatabaseTest {
             )
         )
 
-        val result = transaction { SfsDataAlle.select { SfsDataAlle.pk eq 96 }.single() }
+        val result = transaction { SfsVarighetAlle.select { SfsVarighetAlle.pk eq 96 }.single() }
 
-        result[SfsDataAlle.antall_sykmeldinger] shouldBeEqualTo 1
-        result[SfsDataAlle.gradert_flagg] shouldBeEqualTo 200
+        result[SfsVarighetAlle.antall_sykmeldinger] shouldBeEqualTo 1
+        result[SfsVarighetAlle.gradert_flagg] shouldBeEqualTo 200
     }
 }

@@ -1,9 +1,9 @@
-package no.nav.sykmelderstatistikk.sfsdataalle
+package no.nav.sykmelderstatistikk.database.upsertdatabase.sfsvarighetalle
 
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
-object SfsDataAlle : Table(name = "sfs_data_alle") {
+object SfsVarighetAlle : Table(name = "sfs_varighet_alle") {
     val pk: Column<Int> = integer("pk")
     val aarmnd: Column<String> = text("aarmnd")
     val sykm_bydel_navn: Column<String> = text("sykm_bydel_navn")

@@ -1,10 +1,10 @@
-package no.nav.sykmelderstatistikk.sfsdataalle
+package no.nav.sykmelderstatistikk.models
 
-data class KafkaMessageSfsDataAlle(val data: SfsDataAllePayload, val metadata: SfsMetadata)
+data class KafkaMessageSfsVarighetAlle(val data: SfsVarighetAllePayload, val metadata: SfsMetadata)
 
 data class SfsMetadata(val type: String)
 
-data class SfsDataAllePayload(
+data class SfsVarighetAllePayload(
     val PK: Int,
     val AARMND: String,
     val SYKM_BYDEL_NAVN: String,

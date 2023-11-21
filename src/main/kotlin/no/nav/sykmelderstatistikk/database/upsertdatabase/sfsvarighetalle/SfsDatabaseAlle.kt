@@ -1,18 +1,19 @@
-package no.nav.sykmelderstatistikk.sfsdataalle
+package no.nav.sykmelderstatistikk.database.upsertdatabase.sfsvarighetalle
 
+import no.nav.sykmelderstatistikk.models.KafkaMessageSfsVarighetAlle
 import no.nav.sykmelderstatistikk.securelogger
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.upsert
 
-fun handleSfsDataAlle(kafkaDiagnoseData: KafkaMessageSfsDataAlle) {
+fun handleSfsVarighetAlle(kafkaDiagnoseData: KafkaMessageSfsVarighetAlle) {
     val data = kafkaDiagnoseData.data
 
     transaction {
         addLogger(StdOutSqlLogger)
 
-        SfsDataAlle.upsert {
+        SfsVarighetAlle.upsert {
             it[pk] = data.PK
             it[aarmnd] = data.AARMND
             it[sykm_bydel_navn] = data.SYKM_BYDEL_NAVN

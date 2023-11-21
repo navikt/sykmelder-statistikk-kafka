@@ -14,14 +14,14 @@ import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.*
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
+import no.nav.sykmelderstatistikk.config.EnvironmentVariables
 import no.nav.sykmelderstatistikk.database.ExposedDatabase
-import no.nav.sykmelderstatistikk.models.application.ApplicationState
-import no.nav.sykmelderstatistikk.models.application.EnvironmentVariables
+import no.nav.sykmelderstatistikk.database.upsertdatabase.sfsdatatest.handleSfsData
+import no.nav.sykmelderstatistikk.database.upsertdatabase.sfsvarighetalle.handleSfsVarighetAlle
+import no.nav.sykmelderstatistikk.models.KafkaMessageSfsDataTest
+import no.nav.sykmelderstatistikk.models.KafkaMessageSfsVarighetAlle
 import no.nav.sykmelderstatistikk.plugins.configureRouting
-import no.nav.sykmelderstatistikk.sfsdataalle.KafkaMessageSfsDataAlle
-import no.nav.sykmelderstatistikk.sfsdataalle.handleSfsDataAlle
-import no.nav.sykmelderstatistikk.sfsdatatest.KafkaMessageSfsDataTest
-import no.nav.sykmelderstatistikk.sfsdatatest.handleSfsData
+import no.nav.sykmelderstatistikk.routes.model.ApplicationState
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -113,10 +113,10 @@ private fun start(
                     handleSfsData(kafakMessage)
                 }
                 "AGG_SFS_VARIGHET_ALLE" -> {
-                    val kafakMessage: KafkaMessageSfsDataAlle =
+                    val kafakMessage: KafkaMessageSfsVarighetAlle =
                         objectMapper.readValue(consumerRecord.value())
                     securelogger.info("diagnoseData from kafka is: $kafakMessage")
-                    handleSfsDataAlle(kafakMessage)
+                    handleSfsVarighetAlle(kafakMessage)
                 }
                 else -> {
                     throw IllegalArgumentException(

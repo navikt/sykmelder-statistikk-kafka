@@ -1,4 +1,4 @@
-package no.nav.sykmelderstatistikk.models.application
+package no.nav.sykmelderstatistikk.routes.model
 
 data class ApplicationState(
     var alive: Boolean = true,

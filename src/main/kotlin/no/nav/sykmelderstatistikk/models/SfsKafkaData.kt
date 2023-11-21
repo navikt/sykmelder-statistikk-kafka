@@ -1,4 +1,4 @@
-package no.nav.sykmelderstatistikk.sfsdatatest
+package no.nav.sykmelderstatistikk.models
 
 data class KafkaMessageSfsDataTest(val data: SfsDataTestPayload, val metadata: SfsMetadataTest)
 

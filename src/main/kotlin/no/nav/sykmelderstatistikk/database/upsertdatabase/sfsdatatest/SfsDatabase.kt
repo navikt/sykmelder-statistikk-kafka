@@ -1,5 +1,6 @@
-package no.nav.sykmelderstatistikk.sfsdatatest
+package no.nav.sykmelderstatistikk.database.upsertdatabase.sfsdatatest
 
+import no.nav.sykmelderstatistikk.models.KafkaMessageSfsDataTest
 import no.nav.sykmelderstatistikk.securelogger
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger

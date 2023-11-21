@@ -2,7 +2,7 @@ package no.nav.sykmelderstatistikk.database
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sykmelderstatistikk.models.application.EnvironmentVariables
+import no.nav.sykmelderstatistikk.config.EnvironmentVariables
 import org.amshove.kluent.shouldNotBe
 import org.junit.jupiter.api.Test
 
