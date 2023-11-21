@@ -116,13 +116,7 @@ private fun start(
                     val kafakMessage: KafkaMessageSfsDataAlle =
                         objectMapper.readValue(consumerRecord.value())
                     securelogger.info("diagnoseData from kafka is: $kafakMessage")
-
-                    if (kafakMessage.data.PK == 45096898) {
-                        logger.info("Skipping PK 45096898 already in database")
-                    }
-                    else {
-                        handleSfsDataAlle(kafakMessage)
-                    }
+                    handleSfsDataAlle(kafakMessage)
                 }
                 else -> {
                     throw IllegalArgumentException(

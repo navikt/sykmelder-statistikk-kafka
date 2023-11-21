@@ -3,8 +3,8 @@ package no.nav.sykmelderstatistikk.sfsdataalle
 import no.nav.sykmelderstatistikk.securelogger
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.upsert
 
 fun handleSfsDataAlle(kafkaDiagnoseData: KafkaMessageSfsDataAlle) {
     val data = kafkaDiagnoseData.data
@@ -12,7 +12,7 @@ fun handleSfsDataAlle(kafkaDiagnoseData: KafkaMessageSfsDataAlle) {
     transaction {
         addLogger(StdOutSqlLogger)
 
-        SfsDataAlle.insert {
+        SfsDataAlle.upsert {
             it[pk] = data.PK
             it[aarmnd] = data.AARMND
             it[sykm_bydel_navn] = data.SYKM_BYDEL_NAVN

@@ -3,8 +3,8 @@ package no.nav.sykmelderstatistikk.sfsdatatest
 import no.nav.sykmelderstatistikk.securelogger
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.upsert
 
 fun handleSfsData(kafkaDiagnoseData: KafkaMessageSfsDataTest) {
     val data = kafkaDiagnoseData.data
@@ -12,7 +12,7 @@ fun handleSfsData(kafkaDiagnoseData: KafkaMessageSfsDataTest) {
     transaction {
         addLogger(StdOutSqlLogger)
 
-        SfsDataTest.insert {
+        SfsDataTest.upsert {
             it[pk] = data.PK
             it[aarmnd] = data.AARMND
             it[sykmHovedgruppeKode] = data.SYKM_HOVEDGRUPPE_KODE
