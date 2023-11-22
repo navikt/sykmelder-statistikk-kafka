@@ -18,7 +18,7 @@ data class SfsVarighetAllePayload(
     val HOVEDGRUPPE_SMP_BESK: String,
     val UNDERGRUPPE_SMP_BESK: String,
     val VARIGHET_GRUPPE9_BESK: String,
-    val NAERING_GRUPPE6_BESK_LANG: String,
+    val NAERING_GRUPPE6_BESK_LANG: String?,
     val ANTALL_SYKMELDINGER: Int,
     val GRADERT_FLAGG: Int,
     val ANTALL_DAGER: Int,

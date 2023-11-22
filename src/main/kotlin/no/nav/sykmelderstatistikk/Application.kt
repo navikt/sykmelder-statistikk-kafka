@@ -12,7 +12,6 @@ import io.ktor.server.netty.*
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.*
-import net.logstash.logback.argument.StructuredArguments.keyValue
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.sykmelderstatistikk.config.EnvironmentVariables
@@ -119,9 +118,10 @@ private fun start(
                             objectMapper.readValue(consumerRecord.value())
                         securelogger.info("diagnoseData from kafka is: $kafakMessage")
                         handleSfsVarighetAlle(kafakMessage)
-
-                    }catch (e: Exception){
-                        logger.error("failing to read message with offset ${consumerRecord.offset()} and message ${consumerRecord.value()}")
+                    } catch (e: Exception) {
+                        logger.error(
+                            "failing to read message with offset ${consumerRecord.offset()} and message ${consumerRecord.value()}"
+                        )
                         throw e
                     }
                 }
