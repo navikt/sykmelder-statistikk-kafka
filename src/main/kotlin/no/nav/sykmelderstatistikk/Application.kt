@@ -105,7 +105,6 @@ private fun start(
 ) {
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
-            logger.info("consumerrecord: {} {}", keyValue("offset", consumerRecord.offset()), keyValue("message", consumerRecord.value()))
             val metadata = objectMapper.readTree(consumerRecord.value())
             when (metadata.path("metadata").path("type").asText()) {
                 "sfs_data_test" -> {
@@ -115,10 +114,16 @@ private fun start(
                     handleSfsData(kafakMessage)
                 }
                 "AGG_SFS_VARIGHET_ALLE" -> {
-                    val kafakMessage: KafkaMessageSfsVarighetAlle =
-                        objectMapper.readValue(consumerRecord.value())
-                    securelogger.info("diagnoseData from kafka is: $kafakMessage")
-                    handleSfsVarighetAlle(kafakMessage)
+                    try {
+                        val kafakMessage: KafkaMessageSfsVarighetAlle =
+                            objectMapper.readValue(consumerRecord.value())
+                        securelogger.info("diagnoseData from kafka is: $kafakMessage")
+                        handleSfsVarighetAlle(kafakMessage)
+
+                    }catch (e: Exception){
+                        logger.error("failing to read message with offset ${consumerRecord.offset()} and message ${consumerRecord.value()}")
+                        throw e
+                    }
                 }
                 else -> {
                     throw IllegalArgumentException(
