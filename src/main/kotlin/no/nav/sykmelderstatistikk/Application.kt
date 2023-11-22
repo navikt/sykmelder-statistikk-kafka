@@ -12,6 +12,7 @@ import io.ktor.server.netty.*
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.*
+import net.logstash.logback.argument.StructuredArguments.keyValue
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.sykmelderstatistikk.config.EnvironmentVariables
@@ -104,6 +105,7 @@ private fun start(
 ) {
     while (applicationState.ready) {
         kafkaConsumer.poll(Duration.ofSeconds(10)).forEach { consumerRecord ->
+            logger.info("consumerrecord: {} {}", keyValue("offset", consumerRecord.offset()), keyValue("message", consumerRecord.value()))
             val metadata = objectMapper.readTree(consumerRecord.value())
             when (metadata.path("metadata").path("type").asText()) {
                 "sfs_data_test" -> {
