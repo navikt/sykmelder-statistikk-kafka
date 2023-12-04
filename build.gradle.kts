@@ -1,24 +1,24 @@
-val logbackVersion = "1.4.11"
+val logbackVersion = "1.4.14"
 val junitJupiterVersion = "5.10.1"
 val ktfmtVersion = "0.44"
 val logstashEncoderVersion = "7.4"
 val ktorVersion = "2.3.6"
 val smCommonVersion = "2.0.6"
 val coroutinesVersion = "1.7.3"
-val jacksonVersion = "2.15.3"
-val flywayVersion = "9.22.3"
-val postgresVersion = "42.6.0"
-val exposedVersion = "0.44.1"
+val jacksonVersion = "2.16.0"
+val flywayVersion = "10.1.0"
+val postgresVersion = "42.7.0"
+val exposedVersion = "0.45.0"
 val javaVersion = JavaVersion.VERSION_17
-val testContainersVersion = "1.19.1"
+val testContainersVersion = "1.19.3"
 val mockkVersion = "1.13.8"
 val kluentVersion = "1.73"
 
 plugins {
     id("application")
-    kotlin("jvm") version "1.9.20"
+    kotlin("jvm") version "1.9.21"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("com.diffplug.spotless") version "6.22.0"
+    id("com.diffplug.spotless") version "6.23.3"
 }
 
 group = "no.nav.sykmelderstatistikk"
@@ -55,7 +55,8 @@ dependencies {
 
     implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
 
-    implementation("org.flywaydb:flyway-core:$flywayVersion")
+    compileOnly("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
     implementation("org.postgresql:postgresql:$postgresVersion")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
