@@ -4,8 +4,8 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
+import no.nav.sykmelderstatistikk.models.KafkaMessageSfsDataTest
 import no.nav.sykmelderstatistikk.objectMapper
-import no.nav.sykmelderstatistikk.sfsdatatest.KafkaMessageSfsDataTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test

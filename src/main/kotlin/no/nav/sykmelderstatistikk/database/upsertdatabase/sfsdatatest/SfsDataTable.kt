@@ -1,4 +1,4 @@
-package no.nav.sykmelderstatistikk.sfsdatatest
+package no.nav.sykmelderstatistikk.database.upsertdatabase.sfsdatatest
 
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table

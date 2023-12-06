@@ -6,7 +6,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.sykmelderstatistikk.models.application.ApplicationState
+import no.nav.sykmelderstatistikk.routes.model.ApplicationState
 import no.nav.sykmelderstatistikk.routes.nais.naisInternalRoutes
 
 fun Application.configureRouting(applicationState: ApplicationState, naisClusterName: String) {

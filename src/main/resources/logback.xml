@@ -25,6 +25,7 @@
 
     <logger name="no.nav" level="info"/>
     <logger name="org.apache.kafka" level="ERROR" />
+    <logger name="org.jetbrains.exposed" level="ERROR" />
 
     <root level="info">
         <appender-ref ref="stdout_json"/>
