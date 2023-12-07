@@ -1,6 +1,6 @@
 package no.nav.sykmelderstatistikk.sfs.kafka
 
-import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.core.JsonProcessingException
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 import kotlinx.coroutines.CoroutineScope
@@ -12,13 +12,7 @@ import kotlinx.coroutines.launch
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.sykmelderstatistikk.config.EnvironmentVariables
-import no.nav.sykmelderstatistikk.database.upsertdatabase.sfsdatatest.handleSfsData
-import no.nav.sykmelderstatistikk.database.upsertdatabase.sfsvarighetalle.handleSfsVarighetAlle
-import no.nav.sykmelderstatistikk.logger
-import no.nav.sykmelderstatistikk.models.KafkaMessageSfsDataTest
-import no.nav.sykmelderstatistikk.models.KafkaMessageSfsVarighetAlle
 import no.nav.sykmelderstatistikk.objectMapper
-import no.nav.sykmelderstatistikk.securelogger
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -42,6 +36,8 @@ class SfsDataConsumer(
 ) {
 
     private var job: Job? = null
+
+    private val dataTypes: MutableMap<String, Int> = mutableMapOf()
 
     companion object {
         private const val POLL_DURATION_SECONDS = 1L
@@ -67,6 +63,7 @@ class SfsDataConsumer(
 
     suspend fun consume(coroutineScope: CoroutineScope) {
         kafkaConsumer.subscribe(listOf(environmentVariables.sfsDataTopic))
+        coroutineScope.startLogging()
         while (coroutineScope.isActive) {
             try {
                 val records = kafkaConsumer.poll(POLL_DURATION_SECONDS.seconds.toJavaDuration())
@@ -82,35 +79,20 @@ class SfsDataConsumer(
     }
 
     private fun handleSfsKafkaMessage(consumerRecord: ConsumerRecord<String, String>) {
-        val metadata = objectMapper.readTree(consumerRecord.value())
-        when (metadata.path("metadata").path("type").asText()) {
-            "sfs_data_test" -> {
-                val kafakMessage: KafkaMessageSfsDataTest =
-                    objectMapper.readValue(consumerRecord.value())
-                securelogger.info("diagnoseData from kafka is: $kafakMessage")
-                handleSfsData(kafakMessage)
-            }
-            "AGG_SFS_VARIGHET_ALLE" -> {
-                try {
-                    val kafakMessage: KafkaMessageSfsVarighetAlle =
-                        objectMapper.readValue(consumerRecord.value())
-                    securelogger.info("diagnoseData from kafka is: $kafakMessage")
-                    handleSfsVarighetAlle(kafakMessage)
-                } catch (e: Exception) {
-                    logger.error(
-                        "failing to read message with offset ${consumerRecord.offset()} and message ${consumerRecord.value()}"
-                    )
-                    throw e
-                }
-            }
-            else -> {
-                throw IllegalArgumentException(
-                    "Unknown metadata type, kafka message is: ${
-                        objectMapper.writeValueAsString(
-                            metadata.path("metadata")
-                        )
-                    }"
-                )
+        try {
+            val json = objectMapper.readTree(consumerRecord.value())
+            val type = json.path("metadata").path("type").asText()
+            dataTypes[type] = dataTypes.getOrDefault(type, 0) + 1
+        } catch (ex: JsonProcessingException) {
+            dataTypes["NOT_JSON"] = dataTypes.getOrDefault("NOT_JSON", 0) + 1
+        }
+    }
+
+    private fun CoroutineScope.startLogging(): Job {
+        return launch(Dispatchers.IO) {
+            while (isActive) {
+                delay(10.seconds)
+                dataTypes.forEach { entry -> log.info("Key: ${entry.key}, Count: ${entry.value}") }
             }
         }
     }

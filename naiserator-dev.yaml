@@ -54,6 +54,6 @@ spec:
         - host: teamsykmelding-unleash-api.nav.cloud.nais.io
   env:
     - name: SFS_DATA
-      value: disykefravar.sfs-data
+      value: disykefravar.sfs-data-syk
   envFrom:
     - secret: sykmelder-statistikk-kafka-unleash-api-token
