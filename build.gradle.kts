@@ -13,6 +13,7 @@ val javaVersion = JavaVersion.VERSION_17
 val testContainersVersion = "1.19.3"
 val mockkVersion = "1.13.8"
 val kluentVersion = "1.73"
+val unleashedVersion = "9.1.1"
 
 plugins {
     id("application")
@@ -54,6 +55,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
     implementation("no.nav.helse:syfosm-common-kafka:$smCommonVersion")
+    implementation("io.getunleash:unleash-client-java:$unleashedVersion")
 
     compileOnly("org.flywaydb:flyway-core:$flywayVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
