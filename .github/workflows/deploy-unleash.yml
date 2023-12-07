@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - .github/workflows/deploy-unleash.yml
+      - nais-unleash.yaml
 
 permissions:
   contents: read
