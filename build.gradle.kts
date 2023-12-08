@@ -2,7 +2,7 @@ val logbackVersion = "1.4.14"
 val junitJupiterVersion = "5.10.1"
 val ktfmtVersion = "0.44"
 val logstashEncoderVersion = "7.4"
-val ktorVersion = "2.3.6"
+val ktorVersion = "2.3.7"
 val smCommonVersion = "2.0.6"
 val coroutinesVersion = "1.7.3"
 val jacksonVersion = "2.16.0"
@@ -13,7 +13,7 @@ val javaVersion = JavaVersion.VERSION_17
 val testContainersVersion = "1.19.3"
 val mockkVersion = "1.13.8"
 val kluentVersion = "1.73"
-val unleashedVersion = "9.1.1"
+val unleashedVersion = "9.2.0"
 
 plugins {
     id("application")
