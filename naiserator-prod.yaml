@@ -50,3 +50,9 @@ spec:
   env:
     - name: SFS_DATA
       value: disykefravar.sfs-data-syk
+  accessPolicy:
+    outbound:
+      external:
+        - host: teamsykmelding-unleash-api.nav.cloud.nais.io
+  envFrom:
+    - secret: sykmelder-statistikk-unleash-api-token

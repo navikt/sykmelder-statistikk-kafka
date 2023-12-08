@@ -10,5 +10,5 @@ spec:
     apiVersion: unleash.nais.io/v1
     kind: RemoteUnleash
     name: teamsykmelding
-  secretName: sykmelder-statistikk-kafka-unleash-api-token
+  secretName: sykmelder-statistikk-unleash-api-token
   environment: {{ unleash_env }}

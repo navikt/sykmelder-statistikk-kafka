@@ -56,4 +56,4 @@ spec:
     - name: SFS_DATA
       value: disykefravar.sfs-data-syk
   envFrom:
-    - secret: sykmelder-statistikk-kafka-unleash-api-token
+    - secret: sykmelder-statistikk-unleash-api-token
