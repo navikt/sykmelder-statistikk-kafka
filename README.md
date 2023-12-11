@@ -31,6 +31,17 @@ This the high level flow of the application
       sykmelder-statistikk-kafka <---> sykmelder-statistikk
 ```
 
+Feature data flow?:
+```mermaid
+  graph LR
+      id1([syfo-bekreftet-sykmelding]) --> sykmelder-statistikk-kafka
+      id2([syfo-sendt-sykmelding]) --> sykmelder-statistikk-kafka
+      sykmelder-statistikk-kafka <--> id3[(Database)]
+      sykmelder-statistikk-kafka <--> PDL
+      sykmelder-statistikk-kafka <--> HPR
+      sykmelder-statistikk-kafka <--> flex.syketilfelle
+```
+
 
 ## Getting started
 
