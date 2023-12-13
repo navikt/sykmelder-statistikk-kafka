@@ -13,6 +13,9 @@ import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.sykmelderstatistikk.config.EnvironmentVariables
 import no.nav.sykmelderstatistikk.objectMapper
+import no.nav.sykmelderstatistikk.sfs.kafka.model.DataType
+import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsDataMessage
+import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsKafkaMessageDeserializer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -20,17 +23,17 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.LoggerFactory
 
 val consumer =
-    KafkaConsumer<String, String>(
+    KafkaConsumer<String, SfsDataMessage<DataType>>(
         KafkaUtils.getAivenKafkaConfig("dvh-consumer")
             .toConsumerConfig(
                 "${EnvironmentVariables().applicationName}-consumer",
-                valueDeserializer = StringDeserializer::class
+                valueDeserializer = SfsKafkaMessageDeserializer::class
             )
             .also { it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest" },
     )
 
 class SfsDataConsumer(
-    private val kafkaConsumer: KafkaConsumer<String, String> = consumer,
+    private val kafkaConsumer: KafkaConsumer<String, SfsDataMessage<DataType>> = consumer,
     private val environmentVariables: EnvironmentVariables,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) {
@@ -78,10 +81,10 @@ class SfsDataConsumer(
         kafkaConsumer.unsubscribe()
     }
 
-    private fun handleSfsKafkaMessage(consumerRecord: ConsumerRecord<String, String>) {
+    private fun handleSfsKafkaMessage(consumerRecord: ConsumerRecord<String, SfsDataMessage<DataType>>) {
         try {
-            val json = objectMapper.readTree(consumerRecord.value())
-            val type = json.path("metadata").path("type").asText()
+            val sfsMessage = consumerRecord.value()
+            val type = sfsMessage.data::class.simpleName ?: "no-name"
             dataTypes[type] = dataTypes.getOrDefault(type, 0) + 1
         } catch (ex: JsonProcessingException) {
             dataTypes["NOT_JSON"] = dataTypes.getOrDefault("NOT_JSON", 0) + 1
