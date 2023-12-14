@@ -1,32 +1,32 @@
 package no.nav.sykmelderstatistikk.database.upsertdatabase.sykmeldingvarighet
 
 import SykmeldingVarighet
+import org.jetbrains.exposed.sql.batchUpsert
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.upsert
 
-fun upsertSykmeldingVarighet(sykmeldingVarighet: SykmeldingVarighet) {
+fun upsertSykmeldingVarighet(sykmeldingVarighetList: List<SykmeldingVarighet>) {
 
     transaction {
-        SykmeldingVarighetTable.upsert {
-            it[pk] = sykmeldingVarighet.pk
-            it[ar] = sykmeldingVarighet.ar
-            it[mnd] = sykmeldingVarighet.mnd
-            it[sykmelderFnr] = sykmeldingVarighet.sykmelderFnr
-            it[bydel] = sykmeldingVarighet.bydel
-            it[kommune] = sykmeldingVarighet.kommune
-            it[fylke] = sykmeldingVarighet.fylke
-            it[hovedgruppeKode] = sykmeldingVarighet.hovedgruppeKode
-            it[undergruppeKode] = sykmeldingVarighet.undergruppeKode
-            it[sammensattKode] = sykmeldingVarighet.samensattKode
-            it[pasientKjonn] = sykmeldingVarighet.pasientKjonn
-            it[pasientAldersgruppe] = sykmeldingVarighet.pasientAldersgruppe
-            it[diagnoseHovedgruppe] = sykmeldingVarighet.diagnoseHovedgruppe
-            it[diagnoseUndergruppe] = sykmeldingVarighet.diagnoseUndergruppe
-            it[varighetsgruppe] = sykmeldingVarighet.varighetsgruppe
-            it[naeringsgruppe] = sykmeldingVarighet.naeringsgruppe
-            it[antallSykmeldinger] = sykmeldingVarighet.antallSykmeldinger
-            it[gradert] = sykmeldingVarighet.gradert
-            it[antallDager] = sykmeldingVarighet.antallDager
+        SykmeldingVarighetTable.batchUpsert(sykmeldingVarighetList) {
+            this[SykmeldingVarighetTable.pk] = it.pk
+            this[SykmeldingVarighetTable.ar] = it.ar
+            this[SykmeldingVarighetTable.mnd] = it.mnd
+            this[SykmeldingVarighetTable.sykmelderFnr] = it.sykmelderFnr
+            this[SykmeldingVarighetTable.bydel] = it.bydel
+            this[SykmeldingVarighetTable.kommune] = it.kommune
+            this[SykmeldingVarighetTable.fylke] = it.fylke
+            this[SykmeldingVarighetTable.hovedgruppeKode] = it.hovedgruppeKode
+            this[SykmeldingVarighetTable.undergruppeKode] = it.undergruppeKode
+            this[SykmeldingVarighetTable.sammensattKode] = it.samensattKode
+            this[SykmeldingVarighetTable.pasientKjonn] = it.pasientKjonn
+            this[SykmeldingVarighetTable.pasientAldersgruppe] = it.pasientAldersgruppe
+            this[SykmeldingVarighetTable.diagnoseHovedgruppe] = it.diagnoseHovedgruppe
+            this[SykmeldingVarighetTable.diagnoseUndergruppe] = it.diagnoseUndergruppe
+            this[SykmeldingVarighetTable.varighetsgruppe] = it.varighetsgruppe
+            this[SykmeldingVarighetTable.naeringsgruppe] = it.naeringsgruppe
+            this[SykmeldingVarighetTable.antallSykmeldinger] = it.antallSykmeldinger
+            this[SykmeldingVarighetTable.gradert] = it.gradert
+            this[SykmeldingVarighetTable.antallDager] = it.antallDager
         }
     }
 }

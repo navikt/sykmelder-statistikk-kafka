@@ -20,7 +20,7 @@ import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsDataMessage
 import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsKafkaMessageDeserializer
 import no.nav.sykmelderstatistikk.sfs.kafka.model.UnknownType
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.slf4j.LoggerFactory
 import toSykmeldingVarighet
@@ -78,9 +78,11 @@ class SfsDataConsumer(
             val records = kafkaConsumer.poll(POLL_DURATION_SECONDS.seconds.toJavaDuration())
             records.forEach {
                 try {
-                    handleSfsKafkaMessage(it)
+                    handleSfsKafkaMessage(records)
                 } catch (e: Exception) {
-                    log.error("Error running kafkaConsumer for o: ${it.offset()} p: ${it.partition()}, see secure log for details")
+                    log.error(
+                        "Error running kafkaConsumer for o: ${it.offset()} p: ${it.partition()}, see secure log for details"
+                    )
                     securelogger.error("Error from kafka-consumer", e)
                     kafkaConsumer.unsubscribe()
                     delay(10.seconds)
@@ -92,17 +94,24 @@ class SfsDataConsumer(
     }
 
     private fun handleSfsKafkaMessage(
-        consumerRecord: ConsumerRecord<String, SfsDataMessage<DataType>>
+        consumerRecord: ConsumerRecords<String, SfsDataMessage<DataType>>
     ) {
         try {
-            val sfsMessage = consumerRecord.value()
-            val type = sfsMessage.data::class.simpleName ?: "no-name"
-            dataTypes[type] = dataTypes.getOrDefault(type, 0) + 1
-            when (sfsMessage.data) {
-                is AggSfsVarighetEgen ->
-                    sfsDataService.updateData(toSykmeldingVarighet(sfsMessage.data))
+            val sfsMessages = consumerRecord.map { it.value() }.groupBy { it.data::class }
 
-                is UnknownType -> log.info("unknown type ${sfsMessage.metadata.type}")
+            sfsMessages.forEach {
+                val type = it.key.simpleName ?: "no-name"
+                dataTypes[type] = dataTypes.getOrDefault(type, 0) + 1
+                when (it.key) {
+                    AggSfsVarighetEgen::class ->
+                        sfsDataService.updateData(
+                            it.value.map { aggSfsVarighetEgen ->
+                                toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
+                            }
+                        )
+                    UnknownType::class ->
+                        log.info("unknown types ${it.value.map { it.metadata.type }.distinct()}")
+                }
             }
         } catch (ex: JsonProcessingException) {
             dataTypes["NOT_JSON"] = dataTypes.getOrDefault("NOT_JSON", 0) + 1

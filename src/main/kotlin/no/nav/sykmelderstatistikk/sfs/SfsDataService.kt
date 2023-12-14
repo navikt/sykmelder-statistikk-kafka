@@ -4,7 +4,7 @@ import SykmeldingVarighet
 import no.nav.sykmelderstatistikk.database.upsertdatabase.sykmeldingvarighet.upsertSykmeldingVarighet
 
 class SfsDataService {
-    fun updateData(sykmeldingVarighet: SykmeldingVarighet) {
-        upsertSykmeldingVarighet(sykmeldingVarighet)
+    fun updateData(sykmeldingVarighetList: List<SykmeldingVarighet>) {
+        upsertSykmeldingVarighet(sykmeldingVarighetList)
     }
 }
