@@ -48,8 +48,12 @@ Feature data flow?:
 > * fom og tom på sykmeldingen
 > * Dersom flere perioder, og ulik sykmeldings grad, dele disse opp
 > * Houveddiagnose
-> Fra PDL kan vi hente følgende
+> Fra PDL trenger vi å lagre følgende:
 > * den sykmeldtes geografiske tilhørighet
+> * kommunenr
+> * fylkesnr
+> Fra HPR trenger vi å lagre følgende:
+> * sykmelder godkjenninger verdi, eks LE,TL,MT,FT,KI, Vi veit ikkje hvilken av disse evt sykmelder benyttet under sykmeldingen...
 
 
 ## Getting started
