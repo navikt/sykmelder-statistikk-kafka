@@ -17,6 +17,7 @@ class ExposedDatabaseTest {
                 every { jdbcUrl() } returns TestDb.jdbcUrl
             }
         val exposedDatabase = ExposedDatabase(environmentVariable)
+
         exposedDatabase shouldNotBe null
     }
 }
