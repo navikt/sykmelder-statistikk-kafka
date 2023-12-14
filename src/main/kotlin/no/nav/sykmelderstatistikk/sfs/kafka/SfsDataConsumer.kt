@@ -12,15 +12,17 @@ import kotlinx.coroutines.launch
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.sykmelderstatistikk.config.EnvironmentVariables
-import no.nav.sykmelderstatistikk.objectMapper
+import no.nav.sykmelderstatistikk.sfs.SfsDataService
+import no.nav.sykmelderstatistikk.sfs.kafka.model.AggSfsVarighetEgen
 import no.nav.sykmelderstatistikk.sfs.kafka.model.DataType
 import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsDataMessage
 import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsKafkaMessageDeserializer
+import no.nav.sykmelderstatistikk.sfs.kafka.model.UnknownType
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.LoggerFactory
+import toSykmeldingVarighet
 
 val consumer =
     KafkaConsumer<String, SfsDataMessage<DataType>>(
@@ -36,6 +38,7 @@ class SfsDataConsumer(
     private val kafkaConsumer: KafkaConsumer<String, SfsDataMessage<DataType>> = consumer,
     private val environmentVariables: EnvironmentVariables,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    private val sfsDataService: SfsDataService,
 ) {
 
     private var job: Job? = null
@@ -64,7 +67,7 @@ class SfsDataConsumer(
         }
     }
 
-    suspend fun consume(coroutineScope: CoroutineScope) {
+    private suspend fun consume(coroutineScope: CoroutineScope) {
         kafkaConsumer.subscribe(listOf(environmentVariables.sfsDataTopic))
         coroutineScope.startLogging()
         while (coroutineScope.isActive) {
@@ -81,11 +84,18 @@ class SfsDataConsumer(
         kafkaConsumer.unsubscribe()
     }
 
-    private fun handleSfsKafkaMessage(consumerRecord: ConsumerRecord<String, SfsDataMessage<DataType>>) {
+    private fun handleSfsKafkaMessage(
+        consumerRecord: ConsumerRecord<String, SfsDataMessage<DataType>>
+    ) {
         try {
             val sfsMessage = consumerRecord.value()
             val type = sfsMessage.data::class.simpleName ?: "no-name"
             dataTypes[type] = dataTypes.getOrDefault(type, 0) + 1
+            when (sfsMessage.data) {
+                is AggSfsVarighetEgen ->
+                    sfsDataService.updateData(toSykmeldingVarighet(sfsMessage.data))
+                is UnknownType -> log.info("unknown type ${sfsMessage.metadata.type}")
+            }
         } catch (ex: JsonProcessingException) {
             dataTypes["NOT_JSON"] = dataTypes.getOrDefault("NOT_JSON", 0) + 1
         }

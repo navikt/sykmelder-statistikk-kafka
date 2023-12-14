@@ -16,14 +16,17 @@ class SfsKafkaMessageDeserializer : Deserializer<SfsDataMessage<out DataType>> {
             configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
         }
+
     override fun deserialize(topic: String, value: ByteArray): SfsDataMessage<out DataType> {
 
         val jsonNode = objectMapper.readTree(value)
         val type = jsonNode["metadata"]["type"].asText()
-        val message = when (type) {
-            "AGG_SFS_VARIGHET_EGEN" -> objectMapper.readValue<SfsDataMessage<AggSfsVarighetEgen>>(value)
-            else -> SfsDataMessage(UnknownType(), Metadata(type))
-        }
+        val message =
+            when (type) {
+                "AGG_SFS_VARIGHET_EGEN" ->
+                    objectMapper.readValue<SfsDataMessage<AggSfsVarighetEgen>>(value)
+                else -> SfsDataMessage(UnknownType(), Metadata(type))
+            }
 
         return message
     }

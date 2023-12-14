@@ -14,6 +14,7 @@ import no.nav.sykmelderstatistikk.config.EnvironmentVariables
 import no.nav.sykmelderstatistikk.database.ExposedDatabase
 import no.nav.sykmelderstatistikk.plugins.configureRouting
 import no.nav.sykmelderstatistikk.routes.model.ApplicationState
+import no.nav.sykmelderstatistikk.sfs.SfsDataService
 import no.nav.sykmelderstatistikk.sfs.kafka.SfsDataConsumer
 import no.nav.sykmelderstatistikk.unleash.createUnleashStateHandler
 import org.slf4j.Logger
@@ -56,6 +57,7 @@ fun Application.module() {
         SfsDataConsumer(
             environmentVariables = environmentVariables,
             scope = sharedScope,
+            sfsDataService = SfsDataService()
         )
     createUnleashStateHandler(
         scope = sharedScope,

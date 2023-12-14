@@ -18,7 +18,6 @@ class ExposedDatabase(
 ) {
     init {
         Flyway.configure()
-            .locations("db")
             .dataSource(env.jdbcUrl(), env.dbUsername, env.dbPassword)
             .load()
             .migrate()

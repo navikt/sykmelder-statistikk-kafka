@@ -1,6 +1,5 @@
 package no.nav.sykmelderstatistikk.sfs.kafka.model
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -8,7 +7,8 @@ class SfsKafkaMessageDeserializerTest {
 
     @Test
     fun `test deserialization with AggSfsVarighetEgen type`() {
-        val json = """
+        val json =
+            """
             {
               "metadata": {
                 "type": "AGG_SFS_VARIGHET_EGEN"
@@ -35,7 +35,8 @@ class SfsKafkaMessageDeserializerTest {
                 "ANTALL_DAGER": 8
               }
             }
-        """.trimIndent()
+        """
+                .trimIndent()
         val kafkaDeserializer = SfsKafkaMessageDeserializer()
         val message = kafkaDeserializer.deserialize("topic", json.toByteArray())
 
