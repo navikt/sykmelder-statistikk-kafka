@@ -39,8 +39,17 @@ Feature data flow?:
       sykmelder-statistikk-kafka <--> id3[(Database)]
       sykmelder-statistikk-kafka <--> PDL
       sykmelder-statistikk-kafka <--> HPR
-      sykmelder-statistikk-kafka <--> flex.syketilfelle
 ```
+
+> **Internal note**
+> Fra sykmeldingene trenger vi å lagre følgende:
+> * densykmeldtes fnr
+> * sykmelder fnr(den som signernern sykmeldingen)
+> * fom og tom på sykmeldingen
+> * Dersom flere perioder, og ulik sykmeldings grad, dele disse opp
+> * Houveddiagnose
+> Fra PDL kan vi hente følgende
+> * den sykmeldtes geografiske tilhørighet
 
 
 ## Getting started
