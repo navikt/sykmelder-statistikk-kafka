@@ -10,6 +10,8 @@ fun upsertSykmeldingVarighet(sykmeldingVarighet: SykmeldingVarighet) {
         SykmeldingVarighetTable.upsert {
             it[pk] = sykmeldingVarighet.pk
             it[ar] = sykmeldingVarighet.ar
+            it[mnd] = sykmeldingVarighet.mnd
+            it[sykmelderFnr] = sykmeldingVarighet.sykmelderFnr
             it[bydel] = sykmeldingVarighet.bydel
             it[kommune] = sykmeldingVarighet.kommune
             it[fylke] = sykmeldingVarighet.fylke

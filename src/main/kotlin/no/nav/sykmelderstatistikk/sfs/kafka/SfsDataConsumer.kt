@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.sykmelderstatistikk.config.EnvironmentVariables
+import no.nav.sykmelderstatistikk.securelogger
 import no.nav.sykmelderstatistikk.sfs.SfsDataService
 import no.nav.sykmelderstatistikk.sfs.kafka.model.AggSfsVarighetEgen
 import no.nav.sykmelderstatistikk.sfs.kafka.model.DataType
@@ -24,14 +25,17 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.slf4j.LoggerFactory
 import toSykmeldingVarighet
 
-val consumer =
+private val consumer =
     KafkaConsumer<String, SfsDataMessage<DataType>>(
         KafkaUtils.getAivenKafkaConfig("dvh-consumer")
             .toConsumerConfig(
                 "${EnvironmentVariables().applicationName}-consumer",
-                valueDeserializer = SfsKafkaMessageDeserializer::class
+                valueDeserializer = SfsKafkaMessageDeserializer::class,
             )
-            .also { it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest" },
+            .also {
+                it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
+                it[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 1000
+            },
     )
 
 class SfsDataConsumer(
@@ -71,14 +75,17 @@ class SfsDataConsumer(
         kafkaConsumer.subscribe(listOf(environmentVariables.sfsDataTopic))
         coroutineScope.startLogging()
         while (coroutineScope.isActive) {
-            try {
-                val records = kafkaConsumer.poll(POLL_DURATION_SECONDS.seconds.toJavaDuration())
-                records.forEach { handleSfsKafkaMessage(it) }
-            } catch (e: Exception) {
-                log.error("Error running kafkaConsumer", e)
-                kafkaConsumer.unsubscribe()
-                delay(10.seconds)
-                kafkaConsumer.subscribe(listOf(environmentVariables.sfsDataTopic))
+            val records = kafkaConsumer.poll(POLL_DURATION_SECONDS.seconds.toJavaDuration())
+            records.forEach {
+                try {
+                    handleSfsKafkaMessage(it)
+                } catch (e: Exception) {
+                    log.error("Error running kafkaConsumer for o: ${it.offset()} p: ${it.partition()}, see secure log for details")
+                    securelogger.error("Error from kafka-consumer", e)
+                    kafkaConsumer.unsubscribe()
+                    delay(10.seconds)
+                    kafkaConsumer.subscribe(listOf(environmentVariables.sfsDataTopic))
+                }
             }
         }
         kafkaConsumer.unsubscribe()
@@ -94,6 +101,7 @@ class SfsDataConsumer(
             when (sfsMessage.data) {
                 is AggSfsVarighetEgen ->
                     sfsDataService.updateData(toSykmeldingVarighet(sfsMessage.data))
+
                 is UnknownType -> log.info("unknown type ${sfsMessage.metadata.type}")
             }
         } catch (ex: JsonProcessingException) {

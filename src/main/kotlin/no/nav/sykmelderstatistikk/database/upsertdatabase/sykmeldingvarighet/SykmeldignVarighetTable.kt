@@ -10,6 +10,7 @@ object SykmeldingVarighetTable : Table(name = "sykmelding_varighet") {
     val bydel: Column<String?> = text("bydel").nullable()
     val kommune: Column<String> = text("kommune")
     val fylke: Column<String> = text("fylke")
+    val sykmelderFnr: Column<String> = text("sykmelder_fnr")
     val hovedgruppeKode: Column<String> = text("hovedgruppe_kode")
     val undergruppeKode: Column<String> = text("undergruppe_kode")
     val sammensattKode: Column<String> = text("samensatt_kode")

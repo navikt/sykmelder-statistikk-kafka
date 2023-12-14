@@ -1,7 +1,9 @@
 package no.nav.sykmelderstatistikk.sfs.kafka.model
 
+import org.amshove.kluent.shouldNotBeEqualTo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import toSykmeldingVarighet
 
 class SfsKafkaMessageDeserializerTest {
 
@@ -16,7 +18,7 @@ class SfsKafkaMessageDeserializerTest {
               "data": {
                 "KOMPOSIT_KEY": "1_AGG_SFS_VARIGHET_EGEN",
                 "PK": 1,
-                "AARMND": "",
+                "AARMND": "202202",
                 "SYKM_BYDEL_NAVN": "n/a",
                 "SYKM_KOMMUNE_NAVN": "Test",
                 "SYKM_FYLKE_NAVN": "Test",
@@ -41,6 +43,8 @@ class SfsKafkaMessageDeserializerTest {
         val message = kafkaDeserializer.deserialize("topic", json.toByteArray())
 
         val data = message.data as AggSfsVarighetEgen
+        val mappedData = toSykmeldingVarighet(data)
+        mappedData.mnd shouldNotBeEqualTo null
         assertEquals("1_AGG_SFS_VARIGHET_EGEN", data.KOMPOSIT_KEY)
     }
 }
