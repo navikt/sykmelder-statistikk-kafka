@@ -24,7 +24,7 @@ class ExposedDatabase(
             .migrate()
 
         Database.connect(
-            "${env.jdbcUrl()}?reWriteBatchedInserts=true",
+            env.jdbcUrl(),
             driver = "org.postgresql.Driver",
             user = env.dbUsername,
             password = env.dbPassword,

@@ -34,7 +34,8 @@ private val consumer =
             )
             .also {
                 it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
-                it[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 1000
+                it[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 100
+                it[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = true
             },
     )
 
@@ -48,6 +49,7 @@ class SfsDataConsumer(
     private var job: Job? = null
 
     private val dataTypes: MutableMap<String, Int> = mutableMapOf()
+    private val lastOffsets: MutableMap<Int, Long> = mutableMapOf()
 
     companion object {
         private const val POLL_DURATION_SECONDS = 1L
@@ -76,19 +78,22 @@ class SfsDataConsumer(
         coroutineScope.startLogging()
         while (coroutineScope.isActive) {
             val records = kafkaConsumer.poll(POLL_DURATION_SECONDS.seconds.toJavaDuration())
-            records.forEach {
-                try {
-                    handleSfsKafkaMessage(records)
-                } catch (e: Exception) {
-                    log.error(
-                        "Error running kafkaConsumer for o: ${it.offset()} p: ${it.partition()}, see secure log for details"
-                    )
-                    securelogger.error("Error from kafka-consumer", e)
-                    kafkaConsumer.unsubscribe()
-                    delay(10.seconds)
-                    kafkaConsumer.subscribe(listOf(environmentVariables.sfsDataTopic))
-                }
+            try {
+                handleSfsKafkaMessage(records)
+            } catch (e: Exception) {
+                log.error(
+                        "Error running kafkaConsumer see secure log for details",
+                )
+                securelogger.error("Error from kafka-consumer", e)
+                kafkaConsumer.unsubscribe()
+                delay(10.seconds)
+                kafkaConsumer.subscribe(listOf(environmentVariables.sfsDataTopic))
             }
+
+            if (!records.isEmpty) {
+                lastOffsets[records.last().partition()] = records.last().offset()
+            }
+
         }
         kafkaConsumer.unsubscribe()
     }
@@ -105,10 +110,11 @@ class SfsDataConsumer(
                 when (it.key) {
                     AggSfsVarighetEgen::class ->
                         sfsDataService.updateData(
-                            it.value.map { aggSfsVarighetEgen ->
-                                toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
-                            }
+                                it.value.map { aggSfsVarighetEgen ->
+                                    toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
+                                },
                         )
+
                     UnknownType::class ->
                         log.info("unknown types ${it.value.map { it.metadata.type }.distinct()}")
                 }
@@ -123,6 +129,7 @@ class SfsDataConsumer(
             while (isActive) {
                 delay(10.seconds)
                 dataTypes.forEach { entry -> log.info("Key: ${entry.key}, Count: ${entry.value}") }
+                log.info("offsets ${lastOffsets.map { (p, o) -> "P:$p O:$o" }}")
             }
         }
     }

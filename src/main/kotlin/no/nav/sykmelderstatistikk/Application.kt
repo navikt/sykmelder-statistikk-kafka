@@ -23,13 +23,6 @@ import org.slf4j.LoggerFactory
 val logger: Logger = LoggerFactory.getLogger("no.nav.sykmelderstatistikk.kafka")
 val securelogger: Logger = LoggerFactory.getLogger("securelog")
 
-val objectMapper: ObjectMapper =
-    ObjectMapper()
-        .registerModule(JavaTimeModule())
-        .registerKotlinModule()
-        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
 fun main() {
     val embeddedServer =
         embeddedServer(
