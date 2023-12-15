@@ -101,7 +101,7 @@ class SfsDataConsumer(
 
             sfsMessages.forEach {
                 val type = it.key.simpleName ?: "no-name"
-                dataTypes[type] = dataTypes.getOrDefault(type, 0) + 1
+                dataTypes[type] = dataTypes.getOrDefault(type, 0) + it.value.size
                 when (it.key) {
                     AggSfsVarighetEgen::class ->
                         sfsDataService.updateData(
