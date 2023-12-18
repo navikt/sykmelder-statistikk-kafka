@@ -12,32 +12,44 @@ import kotlinx.coroutines.launch
 import no.nav.syfo.kafka.aiven.KafkaUtils
 import no.nav.syfo.kafka.toConsumerConfig
 import no.nav.sykmelderstatistikk.config.EnvironmentVariables
-import no.nav.sykmelderstatistikk.objectMapper
+import no.nav.sykmelderstatistikk.securelogger
+import no.nav.sykmelderstatistikk.sfs.SfsDataService
+import no.nav.sykmelderstatistikk.sfs.kafka.model.AggSfsVarighetEgen
+import no.nav.sykmelderstatistikk.sfs.kafka.model.DataType
+import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsDataMessage
+import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsKafkaMessageDeserializer
+import no.nav.sykmelderstatistikk.sfs.kafka.model.UnknownType
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.LoggerFactory
+import toSykmeldingVarighet
 
-val consumer =
-    KafkaConsumer<String, String>(
+private val consumer =
+    KafkaConsumer<String, SfsDataMessage<DataType>>(
         KafkaUtils.getAivenKafkaConfig("dvh-consumer")
             .toConsumerConfig(
                 "${EnvironmentVariables().applicationName}-consumer",
-                valueDeserializer = StringDeserializer::class
+                valueDeserializer = SfsKafkaMessageDeserializer::class,
             )
-            .also { it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest" },
+            .also {
+                it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
+                it[ConsumerConfig.MAX_POLL_RECORDS_CONFIG] = 100
+                it[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = true
+            },
     )
 
 class SfsDataConsumer(
-    private val kafkaConsumer: KafkaConsumer<String, String> = consumer,
+    private val kafkaConsumer: KafkaConsumer<String, SfsDataMessage<DataType>> = consumer,
     private val environmentVariables: EnvironmentVariables,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    private val sfsDataService: SfsDataService,
 ) {
 
     private var job: Job? = null
 
     private val dataTypes: MutableMap<String, Int> = mutableMapOf()
+    private val lastOffsets: MutableMap<Int, Long> = mutableMapOf()
 
     companion object {
         private const val POLL_DURATION_SECONDS = 1L
@@ -61,28 +73,52 @@ class SfsDataConsumer(
         }
     }
 
-    suspend fun consume(coroutineScope: CoroutineScope) {
+    private suspend fun consume(coroutineScope: CoroutineScope) {
         kafkaConsumer.subscribe(listOf(environmentVariables.sfsDataTopic))
         coroutineScope.startLogging()
         while (coroutineScope.isActive) {
+            val records = kafkaConsumer.poll(POLL_DURATION_SECONDS.seconds.toJavaDuration())
             try {
-                val records = kafkaConsumer.poll(POLL_DURATION_SECONDS.seconds.toJavaDuration())
-                records.forEach { handleSfsKafkaMessage(it) }
+                handleSfsKafkaMessage(records)
             } catch (e: Exception) {
-                log.error("Error running kafkaConsumer", e)
+                log.error(
+                        "Error running kafkaConsumer see secure log for details",
+                )
+                securelogger.error("Error from kafka-consumer", e)
                 kafkaConsumer.unsubscribe()
                 delay(10.seconds)
                 kafkaConsumer.subscribe(listOf(environmentVariables.sfsDataTopic))
             }
+
+            if (!records.isEmpty) {
+                lastOffsets[records.last().partition()] = records.last().offset()
+            }
+
         }
         kafkaConsumer.unsubscribe()
     }
 
-    private fun handleSfsKafkaMessage(consumerRecord: ConsumerRecord<String, String>) {
+    private fun handleSfsKafkaMessage(
+        consumerRecord: ConsumerRecords<String, SfsDataMessage<DataType>>
+    ) {
         try {
-            val json = objectMapper.readTree(consumerRecord.value())
-            val type = json.path("metadata").path("type").asText()
-            dataTypes[type] = dataTypes.getOrDefault(type, 0) + 1
+            val sfsMessages = consumerRecord.map { it.value() }.groupBy { it.data::class }
+
+            sfsMessages.forEach {
+                val type = it.key.simpleName ?: "no-name"
+                dataTypes[type] = dataTypes.getOrDefault(type, 0) + it.value.size
+                when (it.key) {
+                    AggSfsVarighetEgen::class ->
+                        sfsDataService.updateData(
+                                it.value.map { aggSfsVarighetEgen ->
+                                    toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
+                                },
+                        )
+
+                    UnknownType::class ->
+                        log.info("unknown types ${it.value.map { it.metadata.type }.distinct()}")
+                }
+            }
         } catch (ex: JsonProcessingException) {
             dataTypes["NOT_JSON"] = dataTypes.getOrDefault("NOT_JSON", 0) + 1
         }
@@ -93,6 +129,7 @@ class SfsDataConsumer(
             while (isActive) {
                 delay(10.seconds)
                 dataTypes.forEach { entry -> log.info("Key: ${entry.key}, Count: ${entry.value}") }
+                log.info("offsets ${lastOffsets.map { (p, o) -> "P:$p O:$o" }}")
             }
         }
     }

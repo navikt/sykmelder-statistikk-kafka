@@ -86,6 +86,9 @@ tasks {
         archiveBaseName.set("app")
         archiveClassifier.set("")
         isZip64 = true
+        mergeServiceFiles {
+            setPath("META-INF/services/org.flywaydb.core.extensibility.Plugin")
+        }
         manifest {
             attributes(
                 mapOf(
