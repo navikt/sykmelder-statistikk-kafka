@@ -18,11 +18,13 @@ import no.nav.sykmelderstatistikk.sfs.kafka.model.AggSfsVarighetEgen
 import no.nav.sykmelderstatistikk.sfs.kafka.model.DataType
 import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsDataMessage
 import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsKafkaMessageDeserializer
+import no.nav.sykmelderstatistikk.sfs.kafka.model.FakSfsSykmelding
 import no.nav.sykmelderstatistikk.sfs.kafka.model.UnknownType
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.slf4j.LoggerFactory
+import toSfsSykmelding
 import toSykmeldingVarighet
 
 private val consumer =
@@ -112,6 +114,12 @@ class SfsDataConsumer(
                         sfsDataService.updateData(
                                 it.value.map { aggSfsVarighetEgen ->
                                     toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
+                                },
+                        )
+                    FakSfsSykmelding::class ->
+                        sfsDataService.updateData(
+                                it.value.map { sfsSykmelding ->
+                                    toSfsSykmelding(sfsSykmelding.data as FakSfsSykmelding)
                                 },
                         )
 
