@@ -31,6 +31,30 @@ This the high level flow of the application
       sykmelder-statistikk-kafka <---> sykmelder-statistikk
 ```
 
+Feature data flow?:
+```mermaid
+  graph LR
+      id1([syfo-bekreftet-sykmelding]) --> sykmelder-statistikk-kafka
+      id2([syfo-sendt-sykmelding]) --> sykmelder-statistikk-kafka
+      sykmelder-statistikk-kafka <--> id3[(Database)]
+      sykmelder-statistikk-kafka <--> PDL
+      sykmelder-statistikk-kafka <--> HPR
+```
+
+> **Internal note**
+> Fra sykmeldingene trenger vi å lagre følgende:
+> * densykmeldtes fnr
+> * sykmelder fnr(den som signernern sykmeldingen)
+> * fom og tom på sykmeldingen
+> * Dersom flere perioder, og ulik sykmeldings grad, dele disse opp
+> * Houveddiagnose
+> Fra PDL trenger vi å lagre følgende:
+> * den sykmeldtes geografiske tilhørighet
+> * kommunenr
+> * fylkesnr
+> Fra HPR trenger vi å lagre følgende:
+> * sykmelder godkjenninger verdi, eks LE,TL,MT,FT,KI, Vi veit ikkje hvilken av disse evt sykmelder benyttet under sykmeldingen...
+
 
 ## Getting started
 

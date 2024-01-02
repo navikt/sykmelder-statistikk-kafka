@@ -5,7 +5,7 @@ import io.ktor.server.application.call
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
-import no.nav.sykmelderstatistikk.models.application.ApplicationState
+import no.nav.sykmelderstatistikk.routes.model.ApplicationState
 
 fun Routing.naisInternalRoutes(
     applicationState: ApplicationState,

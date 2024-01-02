@@ -1,6 +1,6 @@
 package no.nav.sykmelderstatistikk.database
 
-import no.nav.sykmelderstatistikk.models.application.EnvironmentVariables
+import no.nav.sykmelderstatistikk.config.EnvironmentVariables
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
@@ -18,8 +18,8 @@ class ExposedDatabase(
 ) {
     init {
         Flyway.configure()
-            .locations("db")
             .dataSource(env.jdbcUrl(), env.dbUsername, env.dbPassword)
+            .validateMigrationNaming(true)
             .load()
             .migrate()
 

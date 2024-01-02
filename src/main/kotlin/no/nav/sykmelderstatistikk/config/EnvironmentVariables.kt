@@ -1,4 +1,4 @@
-package no.nav.sykmelderstatistikk.models.application
+package no.nav.sykmelderstatistikk.config
 
 data class EnvironmentVariables(
     val applicationPort: Int = getEnvVar("APPLICATION_PORT", "8080").toInt(),
