@@ -109,19 +109,19 @@ class SfsDataConsumer(
                 val type = it.key.simpleName ?: "no-name"
                 dataTypes[type] = dataTypes.getOrDefault(type, 0) + it.value.size
                 when (it.key) {
-                    AggSfsVarighetEgen::class ->
-                        sfsDataService.updateData(
+                    AggSfsVarighetEgen::class -> {}
+                        /*sfsDataService.updateData(
                             it.value.map { aggSfsVarighetEgen ->
                                 toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
                             },
-                        )
+                        )*/
                     FakSfsSykmelding::class ->
                         sfsDataService.sfsSykmelding(
                             it.value.map { sfsSykmelding ->
                                 toSfsSykmelding(sfsSykmelding.data as FakSfsSykmelding)
                             },
                         )
-                    UnknownType::class ->
+                    UnknownType:: class ->
                         log.info("unknown types ${it.value.map { it.metadata.type }.distinct()}")
                 }
             }
