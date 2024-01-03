@@ -1,5 +1,7 @@
 package no.nav.sykmelderstatistikk.sfs.kafka.model
 
+import java.time.LocalDate
+
 data class FakSfsSykmelding(
     val PK: Int,
     val AARMND: String,
@@ -21,12 +23,8 @@ data class FakSfsSykmelding(
     val VARIGHET_DAGER: Int,
     val SYKMELDING_ANTALL: Int,
     val GRADERT_ANTALL: Int,
-    val SYKEFRAVAR_FRA_DATO: String,
-    val SYKMELDT_FRA_DATO: String,
-    val SYKMELDT_TIL_DATO: String,
+    val SYKEFRAVAR_FRA_DATO: LocalDate,
+    val SYKMELDT_FRA_DATO: LocalDate,
+    val SYKMELDT_TIL_DATO: LocalDate,
     val SYKMELDING_GRAD: Int,
-    ) :  DataType()
-
-
-
-
+) : DataType()

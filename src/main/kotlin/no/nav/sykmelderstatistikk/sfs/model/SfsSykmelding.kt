@@ -1,11 +1,10 @@
+import java.time.LocalDate
 import no.nav.sykmelderstatistikk.sfs.kafka.model.FakSfsSykmelding
 
 data class SfsSykmelding(
     val pk: Int,
     val ar: Int,
     val mnd: Int,
-    val sykmeldingAntall: Int, //kanskje ikke
-    val gradertAntall: Int,//kanskje ikke
     val sykmelder: Sykmelder,
     val sykmelding: Sykmelding,
     val sykmeldt: Sykmeldt,
@@ -19,15 +18,17 @@ data class Sykmelder(
     val bydel: String?,
     val kommune: String,
     val fylke: String,
-    )
+)
 
 data class Sykmelding(
-    val sykefravarFom: String,
-    val fom: String,
-    val tom: String,
+    val sykefravarFom: LocalDate,
+    val fom: LocalDate,
+    val tom: LocalDate,
     val grad: Int,
     val antallDager: Int,
-    val gradert:  Boolean,
+    val gradert: Boolean,
+    val diagnoseHovedgruppe: String,
+    val diagnoseUndergruppe: String,
 )
 
 data class Sykmeldt(
@@ -35,8 +36,6 @@ data class Sykmeldt(
     val inntektKategori: String,
     val kjonn: String,
     val alder: Int,
-    val diagnoseHovedgruppe: String,
-    val diagnoseUndergruppe: String,
 )
 
 fun toSfsSykmelding(sfsSykmelding: FakSfsSykmelding): SfsSykmelding {
@@ -57,32 +56,33 @@ fun toSfsSykmelding(sfsSykmelding: FakSfsSykmelding): SfsSykmelding {
         pk = sfsSykmelding.PK,
         ar = ar,
         mnd = mnd,
-        sykmeldingAntall = sfsSykmelding.SYKMELDING_ANTALL,
-        gradertAntall = sfsSykmelding.GRADERT_ANTALL,
-        sykmelder = Sykmelder(
-            fnr = sfsSykmelding.SYKM_FODSEL_NR,
-            hovedgruppeKode = sfsSykmelding.SYKM_HOVEDGRUPPE_KODE,
-            undergruppeKode = sfsSykmelding.SYKM_UNDERGRUPPE_KODE,
-            sammensattKode = sfsSykmelding.SYKMELDER_SAMMENL_TYPE_KODE,
-            bydel = bydel,
-            kommune = sfsSykmelding.SYKM_KOMMUNE_NAVN,
-            fylke = sfsSykmelding.SYKM_FYLKE_NAVN,
-        ),
-        sykmelding = Sykmelding(
-            sykefravarFom = sfsSykmelding.SYKEFRAVAR_FRA_DATO,
-            fom = sfsSykmelding.SYKMELDT_FRA_DATO,
-            tom = sfsSykmelding.SYKMELDT_TIL_DATO,
-            grad = sfsSykmelding.GRAD,
-            antallDager = sfsSykmelding.VARIGHET_DAGER,
-            gradert = gradert,
-        ),
-        sykmeldt = Sykmeldt(
-            naeringsgruppe = sfsSykmelding.NAERING_GRUPPE6_BESK_LANG,
-            inntektKategori = sfsSykmelding.INNTEKT_KATEGORI_NAVN,
-            kjonn = sfsSykmelding.PASIENT_KJONN_KODE,
-            alder = sfsSykmelding.PASIENT_ALDER,
-            diagnoseHovedgruppe = sfsSykmelding.HOVEDGRUPPE_SMP_BESK,
-            diagnoseUndergruppe = sfsSykmelding.UNDERGRUPPE_SMP_BESK,
-        )
+        sykmelder =
+            Sykmelder(
+                fnr = sfsSykmelding.SYKM_FODSEL_NR,
+                hovedgruppeKode = sfsSykmelding.SYKM_HOVEDGRUPPE_KODE,
+                undergruppeKode = sfsSykmelding.SYKM_UNDERGRUPPE_KODE,
+                sammensattKode = sfsSykmelding.SYKMELDER_SAMMENL_TYPE_KODE,
+                bydel = bydel,
+                kommune = sfsSykmelding.SYKM_KOMMUNE_NAVN,
+                fylke = sfsSykmelding.SYKM_FYLKE_NAVN,
+            ),
+        sykmelding =
+            Sykmelding(
+                sykefravarFom = sfsSykmelding.SYKEFRAVAR_FRA_DATO,
+                fom = sfsSykmelding.SYKMELDT_FRA_DATO,
+                tom = sfsSykmelding.SYKMELDT_TIL_DATO,
+                grad = sfsSykmelding.GRAD,
+                antallDager = sfsSykmelding.VARIGHET_DAGER,
+                gradert = gradert,
+                diagnoseHovedgruppe = sfsSykmelding.HOVEDGRUPPE_SMP_BESK,
+                diagnoseUndergruppe = sfsSykmelding.UNDERGRUPPE_SMP_BESK,
+            ),
+        sykmeldt =
+            Sykmeldt(
+                naeringsgruppe = sfsSykmelding.NAERING_GRUPPE6_BESK_LANG,
+                inntektKategori = sfsSykmelding.INNTEKT_KATEGORI_NAVN,
+                kjonn = sfsSykmelding.PASIENT_KJONN_KODE,
+                alder = sfsSykmelding.PASIENT_ALDER,
+            )
     )
 }
