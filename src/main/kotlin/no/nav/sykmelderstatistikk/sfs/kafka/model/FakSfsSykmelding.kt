@@ -6,7 +6,7 @@ data class FakSfsSykmelding(
     val PK: Int,
     val AARMND: String,
     val SYKM_FODSEL_NR: String,
-    val NAERING_GRUPPE6_BESK_LANG: String,
+    val NAERING_GRUPPE6_BESK_LANG: String?,
     val INNTEKT_KATEGORI_NAVN: String,
     val PASIENT_KJONN_KODE: String,
     val PASIENT_ALDER: Int,
