@@ -25,6 +25,8 @@ class SfsKafkaMessageDeserializer : Deserializer<SfsDataMessage<out DataType>> {
             when (type) {
                 "AGG_SFS_VARIGHET_EGEN" ->
                     objectMapper.readValue<SfsDataMessage<AggSfsVarighetEgen>>(value)
+                "FAK_SFS_SYKMELDING" ->
+                    objectMapper.readValue<SfsDataMessage<FakSfsSykmelding>>(value)
                 else -> SfsDataMessage(UnknownType(), Metadata(type))
             }
 

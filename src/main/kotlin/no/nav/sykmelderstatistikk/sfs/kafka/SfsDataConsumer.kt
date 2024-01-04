@@ -16,6 +16,7 @@ import no.nav.sykmelderstatistikk.securelogger
 import no.nav.sykmelderstatistikk.sfs.SfsDataService
 import no.nav.sykmelderstatistikk.sfs.kafka.model.AggSfsVarighetEgen
 import no.nav.sykmelderstatistikk.sfs.kafka.model.DataType
+import no.nav.sykmelderstatistikk.sfs.kafka.model.FakSfsSykmelding
 import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsDataMessage
 import no.nav.sykmelderstatistikk.sfs.kafka.model.SfsKafkaMessageDeserializer
 import no.nav.sykmelderstatistikk.sfs.kafka.model.UnknownType
@@ -23,6 +24,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.slf4j.LoggerFactory
+import toSfsSykmelding
 import toSykmeldingVarighet
 
 private val consumer =
@@ -82,7 +84,7 @@ class SfsDataConsumer(
                 handleSfsKafkaMessage(records)
             } catch (e: Exception) {
                 log.error(
-                        "Error running kafkaConsumer see secure log for details",
+                    "Error running kafkaConsumer see secure log for details",
                 )
                 securelogger.error("Error from kafka-consumer", e)
                 kafkaConsumer.unsubscribe()
@@ -93,7 +95,6 @@ class SfsDataConsumer(
             if (!records.isEmpty) {
                 lastOffsets[records.last().partition()] = records.last().offset()
             }
-
         }
         kafkaConsumer.unsubscribe()
     }
@@ -108,14 +109,19 @@ class SfsDataConsumer(
                 val type = it.key.simpleName ?: "no-name"
                 dataTypes[type] = dataTypes.getOrDefault(type, 0) + it.value.size
                 when (it.key) {
-                    AggSfsVarighetEgen::class ->
-                        sfsDataService.updateData(
-                                it.value.map { aggSfsVarighetEgen ->
-                                    toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
-                                },
+                    AggSfsVarighetEgen::class -> {}
+                        /*sfsDataService.updateData(
+                            it.value.map { aggSfsVarighetEgen ->
+                                toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
+                            },
+                        )*/
+                    FakSfsSykmelding::class ->
+                        sfsDataService.sfsSykmelding(
+                            it.value.map { sfsSykmelding ->
+                                toSfsSykmelding(sfsSykmelding.data as FakSfsSykmelding)
+                            },
                         )
-
-                    UnknownType::class ->
+                    UnknownType:: class ->
                         log.info("unknown types ${it.value.map { it.metadata.type }.distinct()}")
                 }
             }
