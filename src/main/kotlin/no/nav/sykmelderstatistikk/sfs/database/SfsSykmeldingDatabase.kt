@@ -25,6 +25,7 @@ fun upsertSfsSykmelding(sfsSykmelding: List<SfsSykmelding>) {
             this[SfsSykmeldingTable.naeringsgruppe] = it.sykmeldt.naeringsgruppe
             this[SfsSykmeldingTable.inntektskategori] = it.sykmeldt.inntektKategori
             this[SfsSykmeldingTable.gradert] = it.sykmelding.gradert
+            this[SfsSykmeldingTable.grad] = it.sykmelding.grad
             this[SfsSykmeldingTable.antallDager] = it.sykmelding.antallDager
             this[SfsSykmeldingTable.sykefravarFom] = it.sykmelding.sykefravarFom
             this[SfsSykmeldingTable.fom] = it.sykmelding.fom
