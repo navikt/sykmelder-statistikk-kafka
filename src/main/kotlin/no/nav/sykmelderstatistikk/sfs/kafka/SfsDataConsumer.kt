@@ -25,7 +25,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.slf4j.LoggerFactory
 import toSfsSykmelding
-import toSykmeldingVarighet
 
 private val consumer =
     KafkaConsumer<String, SfsDataMessage<DataType>>(
@@ -110,18 +109,18 @@ class SfsDataConsumer(
                 dataTypes[type] = dataTypes.getOrDefault(type, 0) + it.value.size
                 when (it.key) {
                     AggSfsVarighetEgen::class -> {}
-                        /*sfsDataService.updateData(
-                            it.value.map { aggSfsVarighetEgen ->
-                                toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
-                            },
-                        )*/
+                    /*sfsDataService.updateData(
+                        it.value.map { aggSfsVarighetEgen ->
+                            toSykmeldingVarighet(aggSfsVarighetEgen.data as AggSfsVarighetEgen)
+                        },
+                    )*/
                     FakSfsSykmelding::class ->
                         sfsDataService.sfsSykmelding(
                             it.value.map { sfsSykmelding ->
                                 toSfsSykmelding(sfsSykmelding.data as FakSfsSykmelding)
                             },
                         )
-                    UnknownType:: class ->
+                    UnknownType::class ->
                         log.info("unknown types ${it.value.map { it.metadata.type }.distinct()}")
                 }
             }
