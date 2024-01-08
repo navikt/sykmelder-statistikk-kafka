@@ -8,10 +8,10 @@ val coroutinesVersion = "1.7.3"
 val jacksonVersion = "2.16.1"
 val flywayVersion = "10.4.1"
 val postgresVersion = "42.7.1"
-val exposedVersion = "0.45.0"
+val exposedVersion = "0.46.0"
 val javaVersion = JavaVersion.VERSION_17
 val testContainersVersion = "1.19.3"
-val mockkVersion = "1.13.8"
+val mockkVersion = "1.13.9"
 val kluentVersion = "1.73"
 val unleashedVersion = "9.2.0"
 
