@@ -6,7 +6,7 @@ val ktorVersion = "2.3.7"
 val smCommonVersion = "2.0.8"
 val coroutinesVersion = "1.7.3"
 val jacksonVersion = "2.16.1"
-val flywayVersion = "10.4.1"
+val flywayVersion = "10.5.0"
 val postgresVersion = "42.7.1"
 val exposedVersion = "0.46.0"
 val javaVersion = JavaVersion.VERSION_17
@@ -19,7 +19,7 @@ plugins {
     id("application")
     kotlin("jvm") version "1.9.22"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("com.diffplug.spotless") version "6.23.3"
+    id("com.diffplug.spotless") version "6.24.0"
 }
 
 group = "no.nav.sykmelderstatistikk"
