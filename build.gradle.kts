@@ -1,4 +1,4 @@
-val logbackVersion = "1.5.0"
+val logbackVersion = "1.5.1"
 val junitJupiterVersion = "5.10.2"
 val ktfmtVersion = "0.44"
 val logstashEncoderVersion = "7.4"
@@ -8,10 +8,10 @@ val coroutinesVersion = "1.8.0"
 val jacksonVersion = "2.16.1"
 val flywayVersion = "10.8.1"
 val postgresVersion = "42.7.2"
-val exposedVersion = "0.47.0"
+val exposedVersion = "0.48.0"
 val javaVersion = JavaVersion.VERSION_17
 val testContainersVersion = "1.19.6"
-val mockkVersion = "1.13.9"
+val mockkVersion = "1.13.10"
 val kluentVersion = "1.73"
 val unleashedVersion = "9.2.0"
 
